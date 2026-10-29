@@ -10,7 +10,17 @@
 
 
 
+<<<<<<< HEAD
    */
+=======
+
+
+
+
+
+   
+
+>>>>>>> origin/issue_m
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
