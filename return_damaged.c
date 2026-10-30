@@ -340,3 +340,22 @@ static void generateRecordID(char *buffer) {
     int n = loadReturns(rec, MAX_RECORDS);
     sprintf(buffer, "RD%04d", n + 1);
 }
+
+static int validateTextField(const char text[]) {
+    if (strlen(text) == 0) return 0;
+    if (strchr(text, '|') != NULL) return 0;
+    return 1;
+}
+
+static void getTodayDate(char *buffer, int size) {
+    time_t now;
+    struct tm *t;
+
+    now = time(NULL);
+    t = localtime(&now);
+    if (t != NULL) {
+        strftime(buffer, (size_t)size, "%Y-%m-%d", t);
+    } else {
+        strcpy(buffer, "0000-00-00");
+    }
+}
