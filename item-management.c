@@ -38,6 +38,12 @@ static void pauseScreen(void) {
     flushInputLine();
 }
 
+static int validateTextField(const char text[]) {
+    if (strlen(text) == 0) return 0;
+    if (strchr(text, '|') != NULL) return 0;
+    return 1;
+}
+
 //------------- item operations -------------
 
 //register item...
