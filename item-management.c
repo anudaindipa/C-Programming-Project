@@ -17,6 +17,15 @@ static const char *VALID_CATEGORIES[NUM_CATEGORIES] = {
     "ELECTRONICS", "FURNITURE", "STATIONERY", "LABEQUIPMENT", "OTHER"
 };
 
+
+static void flushInputLine(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) {
+        /* discard */
+    }
+}
+
+
 //------------- item operations -------------
 
 //register item...
