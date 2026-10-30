@@ -261,8 +261,70 @@ void sortAndDisplayDamageReports(void) {
     }
 }
 
+void calculateDamageLossValue(void) {
+    ReturnRecord rec[MAX_RECORDS];
+    int n = loadReturns(rec, MAX_RECORDS);
+    int i, anyDamage = 0;
+    double totalLoss = 0.0;
+
+    printf("\n----- Total Financial Loss from Damaged Items -----\n");
+    printf("%-8s %-24s %5s %12s %12s\n",
+           "ITEM", "NAME", "QTY", "UNIT PRICE", "LOSS (Rs.)");
+    printf("--------------------------------------------------------------------\n");
+
+    for (i = 0; i < n; i++) {
+        if (strcmp(rec[i].type, "DAMAGE") == 0) {
+            char itemName[60];
+            double price = 0.0;
+            if (getItemInfo(rec[i].itemCode, itemName,
+                            (int)sizeof(itemName), &price)) {
+                double loss = price * rec[i].quantity;
+                printf("%-8s %-24s %5d %12.2f %12.2f\n",
+                       rec[i].itemCode, itemName,
+                       rec[i].quantity, price, loss);
+                totalLoss += loss;
+                anyDamage = 1;
+            }
+        }
+    }
+
+    if (!anyDamage) {
+        printf("No damage has been reported yet.\n");
+        return;
+    }
+    printf("--------------------------------------------------------------------\n");
+    printf("TOTAL ESTIMATED LOSS: Rs. %.2f\n", totalLoss);
+}
+
 static void flushInputLine(void) {
     int c;
     while ((c = getchar()) != '\n' && c != EOF) {
     }
+}
+
+static int loadReturns(ReturnRecord rec[], int maxRecords) {
+    FILE *fp = fopen(RETURN_FILE, "r");
+    int count = 0;
+
+    if (fp == NULL) return 0;
+
+    while (count < maxRecords &&
+           fscanf(fp, " %15[^|]|%9[^|]|%9[^|]|%d|%7[^|]|%49[^|]|%11[^\r\n]",
+                  rec[count].recordID,
+                  rec[count].itemCode,
+                  rec[count].locID,
+                  &rec[count].quantity,
+                  rec[count].type,
+                  rec[count].reason,
+                  rec[count].date) == 7) {
+        count++;
+    }
+    fclose(fp);
+    return count;
+}
+
+static void generateRecordID(char *buffer) {
+    ReturnRecord rec[MAX_RECORDS];
+    int n = loadReturns(rec, MAX_RECORDS);
+    sprintf(buffer, "RD%04d", n + 1);
 }
