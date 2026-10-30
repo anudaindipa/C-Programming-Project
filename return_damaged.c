@@ -402,3 +402,49 @@ static int locationExists(const char locID[]) {
     fclose(fp);
     return found;
 }
+
+
+static int loadStock(StockEntry stock[], int maxRecords) {
+    FILE *fp = fopen(STOCK_FILE, "r");
+    int count = 0;
+
+    if (fp == NULL) return 0;
+
+    while (count < maxRecords &&
+           fscanf(fp, " %9[^|]|%9[^|]|%d",
+                  stock[count].itemCode,
+                  stock[count].locID,
+                  &stock[count].quantity) == 3) {
+        count++;
+    }
+    fclose(fp);
+    return count;
+}
+
+static void saveStock(StockEntry stock[], int n) {
+    FILE *fp = fopen(STOCK_FILE, "w");
+    int i;
+
+    if (fp == NULL) {
+        printf("Error: could not update stock file.\n");
+        return;
+    }
+    for (i = 0; i < n; i++) {
+        fprintf(fp, "%s|%s|%d\n",
+                stock[i].itemCode, stock[i].locID, stock[i].quantity);
+    }
+    fclose(fp);
+}
+
+static int findStockIndex(StockEntry stock[], int n,
+                          const char itemCode[], const char locID[]) {
+    int i;
+    for (i = 0; i < n; i++) {
+        if (strcmp(stock[i].itemCode, itemCode) == 0 &&
+            strcmp(stock[i].locID, locID) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
