@@ -59,3 +59,83 @@ void returnMenu(void) {
         }
     }
 }
+
+void processReturn(void) {
+    char itemCode[10], locID[10], reason[50], recID[16], today[12];
+    int qty, idx, n;
+    StockEntry stock[MAX_RECORDS];
+    FILE *fp;
+
+    printf("\n----- Process a Returned Item (restock) -----\n");
+
+    printf("Enter item code being returned: ");
+    scanf("%9s", itemCode);
+    flushInputLine();
+    if (!getItemInfo(itemCode, NULL, 0, NULL)) {
+        printf("Item \"%s\" does not exist.\n", itemCode);
+        return;
+    }
+
+    printf("Enter location ID the item is being returned to: ");
+    scanf("%9s", locID);
+    flushInputLine();
+    if (!locationExists(locID)) {
+        printf("Location \"%s\" does not exist.\n", locID);
+        return;
+    }
+
+    printf("Enter quantity returned: ");
+    if (scanf("%d", &qty) != 1 || qty <= 0) {
+        printf("Invalid quantity.\n");
+        flushInputLine();
+        return;
+    }
+    flushInputLine();
+
+    printf("Reason / condition note: ");
+    fgets(reason, sizeof(reason), stdin);
+    trimNewline(reason);
+    if (!validateTextField(reason)) {
+        printf("Invalid entry.\n");
+        return;
+    }
+
+    n = loadStock(stock, MAX_RECORDS);
+    idx = findStockIndex(stock, n, itemCode, locID);
+    if (idx != -1) {
+        stock[idx].quantity += qty;
+    } else {
+        if (n >= MAX_RECORDS) {
+            printf("Stock list is full. Cannot add a new entry.\n");
+            return;
+        }
+        strcpy(stock[n].itemCode, itemCode);
+        strcpy(stock[n].locID, locID);
+        stock[n].quantity = qty;
+        n++;
+        idx = n - 1;
+    }
+    saveStock(stock, n);
+
+    generateRecordID(recID);
+    getTodayDate(today, (int)sizeof(today));
+
+    fp = fopen(RETURN_FILE, "a");
+    if (fp == NULL) {
+        printf("Error: could not save return record.\n");
+        return;
+    }
+    fprintf(fp, "%s|%s|%s|%d|RETURN|%s|%s\n",
+            recID, itemCode, locID, qty, reason, today);
+    fclose(fp);
+
+    printf("Return recorded (%s). Stock of %s at %s is now %d unit(s).\n",
+           recID, itemCode, locID, stock[idx].quantity);
+}
+
+
+static void flushInputLine(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) {
+    }
+}
