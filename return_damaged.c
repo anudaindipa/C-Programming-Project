@@ -31,3 +31,59 @@ int readNumber(void) {
     return number;
 }
 
+int loadRecords(Record records[]) {
+    FILE *file = fopen("returns.txt", "r");
+    int count = 0;
+    if (file == NULL) return 0;
+    while (count < MAX &&
+           fscanf(file, " %15[^|]|%9[^|]|%9[^|]|%d|%7[^|]|%49[^|]|%11[^\r\n]",
+                  records[count].id, records[count].item,
+                  records[count].location, &records[count].quantity,
+                  records[count].type, records[count].reason,
+                  records[count].date) == 7) {
+        count++;
+    }
+    fclose(file);
+    return count;
+}
+
+void displayRecords(void) {
+    Record records[MAX];
+    int count = loadRecords(records);
+    int i;
+    printf("\n--- All Return and Damage Records ---\n");
+    if (count == 0) {
+        printf("No records found.\n");
+        return;
+    }
+    for (i = 0; i < count; i++) {
+        printf("%s | %s | %s | %d | %s | %s | %s\n",
+               records[i].id, records[i].item, records[i].location,
+               records[i].quantity, records[i].type,
+               records[i].reason, records[i].date);
+    }
+}
+
+/* The main application only needs to call returnMenu(). */
+void returnMenu(void) {
+    int choice;
+    do {
+        printf("\n===== Return & Damage Menu =====\n");
+        printf("1. Process a returned item (coming soon)\n");
+        printf("2. Report damaged item (coming soon)\n");
+        printf("3. Display all return/damage records\n");
+        printf("4. Sort damage reports by quantity (coming soon)\n");
+        printf("5. Calculate total financial loss (coming soon)\n");
+        printf("0. Back to main menu\nChoose: ");
+        choice = readNumber();
+        switch (choice) {
+            case 1: printf("Option will be added in a later commit.\n"); break;
+            case 2: printf("Option will be added in a later commit.\n"); break;
+            case 3: displayRecords(); break;
+            case 4: printf("Option will be added in a later commit.\n"); break;
+            case 5: printf("Option will be added in a later commit.\n"); break;
+            case 0: break;
+            default: printf("Invalid choice.\n");
+        }
+    } while (choice != 0);
+}
