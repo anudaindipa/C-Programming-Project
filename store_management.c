@@ -203,7 +203,7 @@ int findStock(StockEntry stock[], int count,
 
     return -1;
 }
-// OPTION 1: Add or increase stock
+// option 1:add stock
 void addStock(void)
 {
     StockEntry stock[MAX];
