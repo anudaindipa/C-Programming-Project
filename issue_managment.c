@@ -22,15 +22,5 @@ static void removeNewline(char s[]) {
     s[strcspn(s, "\n")] = '\0';
 }
 
-/* Read a single word safely. */
-static int readCode(const char prompt[], char code[]) {
-    printf("%s", prompt);
-    if (scanf("%9s", code) != 1) {
-        clearInput();
-        return 0;
-    }
-    clearInput();
-    return 1;
-}
 
 
