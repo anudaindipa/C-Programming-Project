@@ -200,6 +200,26 @@ void reportDamage(void) {
     printf("Damage recorded (%s). Stock of %s at %s is now %d unit(s).\n",
            recID, itemCode, locID, stock[idx].quantity);
 }
+void displayReturns(void) {
+    ReturnRecord rec[MAX_RECORDS];
+    int n = loadReturns(rec, MAX_RECORDS);
+    int i;
+
+    printf("\n----- Return & Damage Records (%d) -----\n", n);
+    if (n == 0) {
+        printf("No return/damage records yet.\n");
+        return;
+    }
+
+    printf("%-7s %-8s %-8s %5s %-7s %-20s %-10s\n",
+           "ID", "ITEM", "LOC", "QTY", "TYPE", "REASON", "DATE");
+    printf("--------------------------------------------------------------------------\n");
+    for (i = 0; i < n; i++) {
+        printf("%-7s %-8s %-8s %5d %-7s %-20s %-10s\n",
+               rec[i].recordID, rec[i].itemCode, rec[i].locID,
+               rec[i].quantity, rec[i].type, rec[i].reason, rec[i].date);
+    }
+}
 
 static void flushInputLine(void) {
     int c;
