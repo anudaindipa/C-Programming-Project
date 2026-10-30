@@ -58,6 +58,14 @@ static int sameIgnoreCase(const char a[], const char b[]) {
     return a[i] == b[i];
 }
 
+static int validateCategory(const char category[]) {
+    int i;
+    for (i = 0; i < NUM_CATEGORIES; i++) {
+        if (sameIgnoreCase(category, VALID_CATEGORIES[i])) return 1;
+    }
+    return 0;
+}
+
 //------------- item operations -------------
 
 //register item...
