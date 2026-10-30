@@ -122,6 +122,34 @@ void displayDepartments(void) {
     }
 }
 
+void searchDepartment(void) {
+    Department departments[MAX_RECORDS];
+    char keyword[60];
+    int count, i, found = 0;
+
+    count = loadDepartments(departments);
+
+    printf("Enter code or name to search: ");
+    fgets(keyword, sizeof(keyword), stdin);
+    removeNewline(keyword);
+
+    for (i = 0; i < count; i++) {
+        if (strstr(departments[i].code, keyword) != NULL ||
+            strstr(departments[i].name, keyword) != NULL) {
+            printf("%s | %s | %s\n",
+                   departments[i].code,
+                   departments[i].name,
+                   departments[i].type);
+            found = 1;
+        }
+    }
+
+    if (found == 0) {
+        printf("No matching department found.\n");
+    }
+}
+
+
 
 void departmentMenu(void) {
     int choice;
@@ -129,6 +157,7 @@ void departmentMenu(void) {
         printf("\n===== Department Management =====\n");
         printf("1. Add Department / Common Area\n");
         printf("2. Display Departments\n");
+        printf("3. Search Department\n");
         printf("0. Back to Main Menu\n");
         printf("Enter choice: ");
 
@@ -150,6 +179,9 @@ void departmentMenu(void) {
                 break;
             case 2:
                 displayDepartments();
+                break;
+            case 3:
+                searchDepartment();
                 break;
             case 0:
                 printf("Returning to main menu.\n");
