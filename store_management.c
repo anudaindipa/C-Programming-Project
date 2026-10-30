@@ -186,7 +186,7 @@ void saveStock(StockEntry stock[], int count)
 
     fclose(fp);
 } 
-// Find an existing stock record
+// Find existing stock
 int findStock(StockEntry stock[], int count,
               char code[], char location[])
 {
