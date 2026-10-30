@@ -322,9 +322,40 @@ static int loadReturns(ReturnRecord rec[], int maxRecords) {
     fclose(fp);
     return count;
 }
+static void trimNewline(char s[]) {
+    int len = (int)strlen(s);
+    while (len > 0 && (s[len - 1] == '\n' || s[len - 1] == '\r')) {
+        len--;
+        s[len] = '\0';
+    }
+}
+
+static void pauseScreen(void) {
+    printf("\nPress ENTER to continue...");
+    flushInputLine();
+}
 
 static void generateRecordID(char *buffer) {
     ReturnRecord rec[MAX_RECORDS];
     int n = loadReturns(rec, MAX_RECORDS);
     sprintf(buffer, "RD%04d", n + 1);
+}
+
+static int validateTextField(const char text[]) {
+    if (strlen(text) == 0) return 0;
+    if (strchr(text, '|') != NULL) return 0;
+    return 1;
+}
+
+static void getTodayDate(char *buffer, int size) {
+    time_t now;
+    struct tm *t;
+
+    now = time(NULL);
+    t = localtime(&now);
+    if (t != NULL) {
+        strftime(buffer, (size_t)size, "%Y-%m-%d", t);
+    } else {
+        strcpy(buffer, "0000-00-00");
+    }
 }
