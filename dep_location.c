@@ -98,6 +98,31 @@ int loadDepartments(Department departments[]) {
     printf("Department added successfully.\n");
 }
 
+/* Display all departments or common areas. */
+void displayDepartments(void) {
+    Department departments[MAX_RECORDS];
+    int count, i;
+
+    count = loadDepartments(departments);
+
+    printf("\n--- Department List ---\n");
+
+    if (count == 0) {
+        printf("No departments found.\n");
+        return;
+    }
+
+    printf("%-10s %-30s %-10s\n", "CODE", "NAME", "TYPE");
+
+    for (i = 0; i < count; i++) {
+        printf("%-10s %-30s %-10s\n",
+               departments[i].code,
+               departments[i].name,
+               departments[i].type);
+    }
+}
+
+
 void departmentMenu(void) {
     int choice;
     do {
