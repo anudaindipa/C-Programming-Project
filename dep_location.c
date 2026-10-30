@@ -283,6 +283,66 @@ static int isLocationExist(char id[]) {
     return 0;
 }
 
+
+/* Add a location and connect it to an existing department. */
+static void addLocation(void) {
+    Location location;
+    FILE *fp;
+
+    printf("\n--- Add Location ---\n");
+
+    printf("Enter location ID: ");
+    scanf("%9s", location.id);
+    clearInputBuffer();
+    makeUppercase(location.id);
+
+    if (isLocationExist(location.id)) {
+        printf("This location ID already exists.\n");
+        return;
+    }
+
+    printf("Enter location name: ");
+    fgets(location.name, sizeof(location.name), stdin);
+    removeNewline(location.name);
+
+    printf("Enter department code: ");
+    scanf("%9s", location.deptCode);
+    clearInputBuffer();
+    makeUppercase(location.deptCode);
+
+    if (!isDepartmentExist(location.deptCode)) {
+        printf("Department does not exist. Add it first.\n");
+        return;
+    }
+
+    printf("Enter type (LAB / OFFICE / COMMON / STORE): ");
+    scanf("%14s", location.type);
+    clearInputBuffer();
+    makeUppercase(location.type);
+
+    if (strcmp(location.name, "") == 0 || strchr(location.name, '|') != NULL) {
+        printf("Location name cannot be empty.\n");
+        return;
+    }
+
+    fp = fopen(LOC_FILE, "a");
+
+    if (fp == NULL) {
+        printf("Cannot open locations.txt\n");
+        return;
+    }
+
+    fprintf(fp, "%s|%s|%s|%s\n",
+            location.id,
+            location.name,
+            location.deptCode,
+            location.type);
+    fclose(fp);
+
+    printf("Location added successfully.\n");
+}
+
+
 void departmentMenu(void) {
     int choice;
     do {
