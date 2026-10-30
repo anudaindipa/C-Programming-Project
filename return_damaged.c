@@ -64,7 +64,37 @@ void displayRecords(void) {
     }
 }
 
-/* The main application only needs to call returnMenu(). */
+int itemExists(char code[]) {
+    FILE *file = fopen("items.txt", "r");
+    char item[10], name[60], category[25], unit[12];
+    double price;
+    if (file == NULL) return 0;
+    while (fscanf(file, " %9[^|]|%59[^|]|%24[^|]|%11[^|]|%lf",
+                  item, name, category, unit, &price) == 5) {
+        if (strcmp(item, code) == 0) {
+            fclose(file);
+            return 1;
+        }
+    }
+    fclose(file);
+    return 0;
+}
+
+int locationExists(char code[]) {
+    FILE *file = fopen("locations.txt", "r");
+    char id[10], name[60], dept[10], type[15];
+    if (file == NULL) return 0;
+    while (fscanf(file, " %9[^|]|%59[^|]|%9[^|]|%14[^\r\n]",
+                  id, name, dept, type) == 4) {
+        if (strcmp(id, code) == 0) {
+            fclose(file);
+            return 1;
+        }
+    }
+    fclose(file);
+    return 0;
+}
+
 void returnMenu(void) {
     int choice;
     do {
