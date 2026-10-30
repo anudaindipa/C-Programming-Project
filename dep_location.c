@@ -251,6 +251,22 @@ static int loadLocations(Location locations[]) {
 }
 
 
+/* Check whether a department code is already saved. */
+static int isDepartmentExist(char code[]) {
+    Department departments[MAX_RECORDS];
+    int count, i;
+
+    count = loadDepartments(departments);
+
+    for (i = 0; i < count; i++) {
+        if (strcmp(departments[i].code, code) == 0) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 void departmentMenu(void) {
     int choice;
     do {
