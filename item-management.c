@@ -5,6 +5,15 @@
 #define MAX_ITEMS      500
 #define NUM_CATEGORIES 5
 
+typedef struct {
+    char code[10];
+    char name[60];
+    char category[25];
+    char unit[12];
+    double price;
+} Item;
+
+
 // ------------- menu fuction ----------------
 
 void itemMenu(void) {
