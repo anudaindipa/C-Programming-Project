@@ -270,4 +270,31 @@ void addStock(void)
 
     printf("Stock successfully updated!\n");
 }
+// OPTION 2: Display all stock
+void displayStock(void)
+{
+    StockEntry stock[MAX];
 
+    int count;
+    int i;
+
+    count = loadStock(stock);
+
+    printf("\n--- All Stock ---\n");
+
+    if (count == 0)
+    {
+        printf("No stock available!\n");
+        return;
+    }
+
+    printf("ITEM CODE\tLOCATION\tQUANTITY\n");
+
+    for (i = 0; i < count; i++)
+    {
+        printf("%s\t\t%s\t\t%d\n",
+               stock[i].itemCode,
+               stock[i].locID,
+               stock[i].quantity);
+    }
+}
