@@ -328,3 +328,31 @@ static void generateRecordID(char *buffer) {
     int n = loadReturns(rec, MAX_RECORDS);
     sprintf(buffer, "RD%04d", n + 1);
 }
+
+
+static void saveStock(StockEntry stock[], int n) {
+    FILE *fp = fopen(STOCK_FILE, "w");
+    int i;
+
+    if (fp == NULL) {
+        printf("Error: could not update stock file.\n");
+        return;
+    }
+    for (i = 0; i < n; i++) {
+        fprintf(fp, "%s|%s|%d\n",
+                stock[i].itemCode, stock[i].locID, stock[i].quantity);
+    }
+    fclose(fp);
+}
+
+static int findStockIndex(StockEntry stock[], int n,
+                          const char itemCode[], const char locID[]) {
+    int i;
+    for (i = 0; i < n; i++) {
+        if (strcmp(stock[i].itemCode, itemCode) == 0 &&
+            strcmp(stock[i].locID, locID) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
