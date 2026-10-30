@@ -400,3 +400,43 @@ static void trimNewline(char s[]) {
         s[len] = '\0';
     }
 }
+
+static void getTodayDate(char *buffer, int size) {
+    time_t now;
+    struct tm *t;
+
+    now = time(NULL);
+    t = localtime(&now);
+    if (t != NULL) {
+        strftime(buffer, (size_t)size, "%Y-%m-%d", t);
+    } else {
+        strcpy(buffer, "0000-00-00");
+    }
+}
+
+static int getItemInfo(const char code[], char nameOut[],
+                       int nameOutSize, double *priceOut) {
+    FILE *fp = fopen(ITEM_FILE, "r");
+    char lineCode[10], lineName[60], category[25], unit[12];
+    double price;
+    int found = 0;
+
+    if (fp == NULL) return 0;
+
+    while (fscanf(fp, " %9[^|]|%59[^|]|%24[^|]|%11[^|]|%lf",
+                  lineCode, lineName, category, unit, &price) == 5) {
+        if (strcmp(lineCode, code) == 0) {
+            if (nameOut != NULL && nameOutSize > 0) {
+                strncpy(nameOut, lineName, (size_t)nameOutSize - 1);
+                nameOut[nameOutSize - 1] = '\0';
+            }
+            if (priceOut != NULL) *priceOut = price;
+            found = 1;
+            break;
+        }
+    }
+    fclose(fp);
+    return found;
+}
+
+
