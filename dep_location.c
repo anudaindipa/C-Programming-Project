@@ -44,6 +44,60 @@ int loadDepartments(Department departments[]) {
     return count;
 }
 
+/* Add a new department or common area. */
+ void addDepartment(void) {
+    Department department;
+    Department departments[MAX_RECORDS];
+    FILE *fp;
+    int count, i;
+
+    printf("\n--- Add Department / Common Area ---\n");
+
+    printf("Enter code (ICT, ET, BST, MDC, COMMON): ");
+    scanf("%9s", department.code);
+    clearInputBuffer();
+    makeUppercase(department.code);
+
+    count = loadDepartments(departments);
+
+    for (i = 0; i < count; i++) {
+        if (strcmp(departments[i].code, department.code) == 0) {
+            printf("This department code already exists.\n");
+            return;
+        }
+    }
+
+    printf("Enter department / area name: ");
+    fgets(department.name, sizeof(department.name), stdin);
+    removeNewline(department.name);
+
+    printf("Enter type (ACADEMIC / COMMON): ");
+    scanf("%11s", department.type);
+    clearInputBuffer();
+    makeUppercase(department.type);
+
+    if (strcmp(department.name, "") == 0 ||
+        strchr(department.name, '|') != NULL ||
+        (strcmp(department.type, "ACADEMIC") != 0 &&
+         strcmp(department.type, "COMMON") != 0)) {
+        printf("Invalid details. Department was not added.\n");
+        return;
+    }
+
+    fp = fopen(DEPT_FILE, "a");
+
+    if (fp == NULL) {
+        printf("Cannot open departments.txt\n");
+        return;
+    }
+
+    fprintf(fp, "%s|%s|%s\n",
+            department.code, department.name, department.type);
+    fclose(fp);
+
+    printf("Department added successfully.\n");
+}
+
 void departmentMenu(void) {
     int choice;
     do {
