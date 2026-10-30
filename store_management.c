@@ -79,3 +79,54 @@ int locationExists(char id[])
     return 0;
 }
 
+// Load stock information
+int loadStock(StockEntry stock[])
+{
+    FILE *fp;
+    int count = 0;
+
+    fp = fopen(STOCK_FILE, "r");
+
+    if (fp == NULL)
+        return 0;
+
+    while (count < MAX &&
+           fscanf(fp, " %9[^|]|%9[^|]|%d",
+                  stock[count].itemCode,
+                  stock[count].locID,
+                  &stock[count].quantity) == 3)
+    {
+        count++;
+    }
+
+    fclose(fp);
+
+    return count;
+}
+
+
+// Save stock information
+void saveStock(StockEntry stock[], int count)
+{
+    FILE *fp;
+    int i;
+
+    fp = fopen(STOCK_FILE, "w");
+
+    if (fp == NULL)
+    {
+        printf("File error!\n");
+        return;
+    }
+
+    for (i = 0; i < count; i++)
+    {
+        fprintf(fp, "%s|%s|%d\n",
+                stock[i].itemCode,
+                stock[i].locID,
+                stock[i].quantity);
+    }
+
+    fclose(fp);
+}
+
