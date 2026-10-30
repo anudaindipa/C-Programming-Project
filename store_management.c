@@ -186,4 +186,21 @@ void saveStock(StockEntry stock[], int count)
 
     fclose(fp);
 } 
+// Find an existing stock record
+int findStock(StockEntry stock[], int count,
+              char code[], char location[])
+{
+    int i;
+
+    for (i = 0; i < count; i++)
+    {
+        if (strcmp(stock[i].itemCode, code) == 0 &&
+            strcmp(stock[i].locID, location) == 0)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
 
