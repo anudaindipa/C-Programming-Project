@@ -22,7 +22,7 @@ void itemMenu(void) {
         printf("Enter your choice: ");
 
         if (scanf("%d", &choice) != 1) {
-            if (feof(stdin)) { running = 0; break; }  /* no more input */
+            if (feof(stdin)) { running = 0; break; }
             printf("Invalid input.\n");
             flushInputLine();
             continue;
