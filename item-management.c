@@ -17,6 +17,63 @@ static const char *VALID_CATEGORIES[NUM_CATEGORIES] = {
     "ELECTRONICS", "FURNITURE", "STATIONERY", "LABEQUIPMENT", "OTHER"
 };
 
+
+void registerItem(void) {
+    Item it;
+    FILE *fp;
+    char *code;
+
+    printf("\n----- Register New Item -----\n");
+
+    code = generateItemCode();
+    strcpy(it.code, code);
+    printf("Auto-generated item code: %s\n", it.code);
+
+    printf("Enter item name: ");
+    fgets(it.name, sizeof(it.name), stdin);
+    trimNewline(it.name);
+    if (!validateTextField(it.name)) {
+        printf("Invalid item name.\n");
+        return;
+    }
+
+    printf("Enter category (Electronics / Furniture / Stationery / LabEquipment / Other): ");
+    fgets(it.category, sizeof(it.category), stdin);
+    trimNewline(it.category);
+    if (!validateCategory(it.category)) {
+        printf("Invalid category.\n");
+        return;
+    }
+
+    printf("Enter unit of measure (Nos / Box / Pack / Set): ");
+    scanf("%11s", it.unit);
+    flushInputLine();
+    if (!validateTextField(it.unit)) {
+        printf("Invalid unit.\n");
+        return;
+    }
+
+    printf("Enter unit price (Rs.): ");
+    if (scanf("%lf", &it.price) != 1 || it.price < 0) {
+        printf("Invalid price.\n");
+        flushInputLine();
+        return;
+    }
+    flushInputLine();
+
+    fp = fopen(ITEM_FILE, "a");
+    if (fp == NULL) {
+        printf("Error: could not open %s for writing.\n", ITEM_FILE);
+        return;
+    }
+    fprintf(fp, "%s|%s|%s|%s|%.2f\n",
+            it.code, it.name, it.category, it.unit, it.price);
+    fclose(fp);
+
+    printf("Item \"%s\" (%s) registered successfully.\n", it.code, it.name);
+}
+
+
 // ------------- menu fuction ----------------
 
 void itemMenu(void) {
