@@ -114,7 +114,7 @@ void issueItem(void) {
            qty, name, item, location, id, date);
     printf("Remaining stock: %d\n", stock[index].qty);
 }
-
+// option 2 displayIssueditems function
 void displayIssuedItems(void) {
     Issue issues[MAX];
     int n = loadIssues(issues), i;
