@@ -298,3 +298,51 @@ void displayStock(void)
                stock[i].quantity);
     }
 }
+//option 3: display stock by location
+void displayStockByLocation(void)
+{
+    StockEntry stock[MAX];
+
+    char location[10];
+
+    int count;
+    int i;
+    int found = 0;
+    int total = 0;
+
+    printf("\nEnter location ID: ");
+    scanf("%9s", location);
+
+    if (!locationExists(location))
+    {
+        printf("Location does not exist!\n");
+        return;
+    }
+
+    count = loadStock(stock);
+
+    printf("\n--- Stock by Location ---\n");
+
+    for (i = 0; i < count; i++)
+    {
+        if (strcmp(stock[i].locID, location) == 0)
+        {
+            printf("Item: %s  Quantity: %d\n",
+                   stock[i].itemCode,
+                   stock[i].quantity);
+
+            total += stock[i].quantity;
+
+            found = 1;
+        }
+    }
+
+    if (found == 0)
+    {
+        printf("No stock in this location!\n");
+    }
+    else
+    {
+        printf("Total quantity: %d\n", total);
+    }
+}
