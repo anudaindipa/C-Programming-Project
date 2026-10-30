@@ -1,15 +1,16 @@
-/* ------------------------------------------------------------------
-   issue_management.c  -  Issue / Allocation Management
-
-<<<<<<< HEAD
-   Data files (one record per line, fields separated by '|'):*/
-
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
 
-#define ISSUE_FILE  "issues.txt"
-#define ITEM_FILE   "items.txt"
-#define LOC_FILE    "locations.txt"
-#define STOCK_FILE  "stock.txt"
-#define MAX_RECORDS 1000
+#define MAX 1000
+
+typedef struct {
+    char id[16], item[10], location[10], person[40], date[12];
+    int qty;
+} Issue;
+
+typedef struct {
+    char item[10], location[10];
+    int qty;
+} Stock;
+
