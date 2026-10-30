@@ -439,4 +439,14 @@ static int getItemInfo(const char code[], char nameOut[],
     return found;
 }
 
+static void pauseScreen(void) {
+    printf("\nPress ENTER to continue...");
+    flushInputLine();
+}
+
+static int validateTextField(const char text[]) {
+    if (strlen(text) == 0) return 0;
+    if (strchr(text, '|') != NULL) return 0;
+    return 1;
+}
 
