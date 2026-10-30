@@ -322,6 +322,18 @@ static int loadReturns(ReturnRecord rec[], int maxRecords) {
     fclose(fp);
     return count;
 }
+static void trimNewline(char s[]) {
+    int len = (int)strlen(s);
+    while (len > 0 && (s[len - 1] == '\n' || s[len - 1] == '\r')) {
+        len--;
+        s[len] = '\0';
+    }
+}
+
+static void pauseScreen(void) {
+    printf("\nPress ENTER to continue...");
+    flushInputLine();
+}
 
 static void generateRecordID(char *buffer) {
     ReturnRecord rec[MAX_RECORDS];
