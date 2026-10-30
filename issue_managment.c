@@ -19,6 +19,29 @@ typedef struct {
     int qty;
 } Stock;
 
+/* Main Function Declarations */
+
+void issueMenu(void);
+void issueItem(void);
+void displayIssuedItems(void);
+void searchIssueByLocation(void);
+
+
+/* Helper Function Declarations */
+
+static void clearInput(void);
+static void removeNewline(char s[]);
+static int readCode(const char prompt[], char code[]);
+
+static int findItem(const char code[], char itemName[]);
+static int findLocation(const char code[]);
+
+static int loadStock(Stock stock[]);
+static int saveStock(Stock stock[], int n);
+
+static int loadIssues(Issue issues[]);
+static void nextIssueID(char id[]);
+
 /* Display main function */
 void issueMenu(void) {
     int choice;
