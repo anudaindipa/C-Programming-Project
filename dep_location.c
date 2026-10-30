@@ -5,10 +5,47 @@
 #define LOC_FILE "locations.txt"
 #define MAX_RECORDS 200 
 
+typedef struct {
+    char code[10];
+    char name[60];
+    char type[12];
+} Department;
+
+typedef struct {
+    char id[10];
+    char name[60];
+    char deptCode[10];
+    char type[15];
+} Location;
+
+
+
+//Load department records from departments.txt into an array.
+int loadDepartments(Department departments[]) {
+    FILE *fp;
+    int count = 0;
+
+    fp = fopen(DEPT_FILE, "r");
+
+    if (fp == NULL) {
+        return 0;
+    }
+
+    while (count < MAX_RECORDS &&
+           fscanf(fp, " %9[^|]|%59[^|]|%11[^\r\n]",
+                  departments[count].code,
+                  departments[count].name,
+                  departments[count].type) == 3) {
+        count++;
+    }
+
+    fclose(fp);
+
+    return count;
+}
 
 void departmentMenu(void) {
     int choice;
-
     do {
         printf("\n===== Department Management =====\n");
         printf("1. Add Department / Common Area\n");
@@ -42,4 +79,4 @@ void departmentMenu(void) {
                 printf("Invalid choice.\n");
         }
     } while (choice != 0);
-}/* tharusha*/
+}
