@@ -249,4 +249,14 @@ static int loadIssues(Issue issues[]) {
     }
     fclose(f);
     return n;
+//nextIssueID
+static void nextIssueID(char id[]) {
+    Issue issues[MAX];
+    int n = loadIssues(issues), i, number, largest = 0;
+    for (i = 0; i < n; i++) {
+        if (sscanf(issues[i].id, "ISS%d", &number) == 1 && number > largest)
+            largest = number;
+    }
+    sprintf(id, "ISS%04d", largest + 1);
+}
 }
