@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#define ITEM_FILE      "items.txt"
+#define MAX_ITEMS      500
+#define NUM_CATEGORIES 5
+
 // ------------- menu fuction ----------------
 
 void itemMenu(void) {
