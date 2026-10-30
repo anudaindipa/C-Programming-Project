@@ -203,4 +203,71 @@ int findStock(StockEntry stock[], int count,
 
     return -1;
 }
+// OPTION 1: Add or increase stock
+void addStock(void)
+{
+    StockEntry stock[MAX];
+
+    char code[10];
+    char location[10];
+
+    int quantity;
+    int count;
+    int index;
+
+    printf("\n--- Add Stock ---\n");
+
+    printf("Enter item code: ");
+    scanf("%9s", code);
+
+    if (!itemExists(code))
+    {
+        printf("Item does not exist!\n");
+        return;
+    }
+
+    printf("Enter location ID: ");
+    scanf("%9s", location);
+
+    if (!locationExists(location))
+    {
+        printf("Location does not exist!\n");
+        return;
+    }
+
+    printf("Enter quantity: ");
+    if (scanf("%d", &quantity) != 1 || quantity <= 0)
+    {
+        printf("Invalid quantity!\n");
+        return;
+    }
+
+    count = loadStock(stock);
+
+    index = findStock(stock, count, code, location);
+
+    if (index != -1)
+    {
+        stock[index].quantity += quantity;
+    }
+    else
+    {
+        if (count >= MAX)
+        {
+            printf("Stock is full!\n");
+            return;
+        }
+
+        strcpy(stock[count].itemCode, code);
+        strcpy(stock[count].locID, location);
+
+        stock[count].quantity = quantity;
+
+        count++;
+    }
+
+    saveStock(stock, count);
+
+    printf("Stock successfully updated!\n");
+}
 
