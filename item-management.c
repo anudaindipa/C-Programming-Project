@@ -97,6 +97,35 @@ void displayItems(void) {
     }
 }
 
+//scarch items...
+void searchItem(void) {
+    Item items[MAX_ITEMS];
+    int n = loadItems(items, MAX_ITEMS);
+    char keyword[60];
+    int i, found = 0;
+
+    printf("\nEnter item code or part of the item name to search: ");
+    fgets(keyword, sizeof(keyword), stdin);
+    trimNewline(keyword);
+
+    for (i = 0; i < n; i++) {
+        if (strstr(items[i].code, keyword) != NULL ||
+            strstr(items[i].name, keyword) != NULL) {
+            if (!found) {
+                printf("%-8s %-24s %-14s %-6s %10s\n",
+                       "CODE", "NAME", "CATEGORY", "UNIT", "PRICE");
+                printf("----------------------------------------------------------------------\n");
+            }
+            printf("%-8s %-24s %-14s %-6s %10.2f\n",
+                   items[i].code, items[i].name, items[i].category,
+                   items[i].unit, items[i].price);
+            found = 1;
+        }
+    }
+    if (!found) printf("No matching item found.\n");
+}
+
+
 
 // ------------- menu fuction ----------------
 
