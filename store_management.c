@@ -186,4 +186,198 @@ void saveStock(StockEntry stock[], int count)
     }
 
     fclose(fp);
+<<<<<<< HEAD
+=======
+} 
+// Find existing stock
+int findStock(StockEntry stock[], int count,
+              char code[], char location[])
+{
+    int i;
+
+    for (i = 0; i < count; i++)
+    {
+        if (strcmp(stock[i].itemCode, code) == 0 &&
+            strcmp(stock[i].locID, location) == 0)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+// option 1:add stock
+void addStock(void)
+{
+    StockEntry stock[MAX];
+
+    char code[10];
+    char location[10];
+
+    int quantity;
+    int count;
+    int index;
+
+    printf("\n--- Add Stock ---\n");
+
+    printf("Enter item code: ");
+    scanf("%9s", code);
+
+    if (!itemExists(code))
+    {
+        printf("Item does not exist!\n");
+        return;
+    }
+
+    printf("Enter location ID: ");
+    scanf("%9s", location);
+
+    if (!locationExists(location))
+    {
+        printf("Location does not exist!\n");
+        return;
+    }
+
+    printf("Enter quantity: ");
+    if (scanf("%d", &quantity) != 1 || quantity <= 0)
+    {
+        printf("Invalid quantity!\n");
+        return;
+    }
+
+    count = loadStock(stock);
+
+    index = findStock(stock, count, code, location);
+
+    if (index != -1)
+    {
+        stock[index].quantity += quantity;
+    }
+    else
+    {
+        if (count >= MAX)
+        {
+            printf("Stock is full!\n");
+            return;
+        }
+
+        strcpy(stock[count].itemCode, code);
+        strcpy(stock[count].locID, location);
+
+        stock[count].quantity = quantity;
+
+        count++;
+    }
+
+    saveStock(stock, count);
+
+    printf("Stock successfully updated!\n");
+}
+//option 2: display all
+void displayStock(void)
+{
+    StockEntry stock[MAX];
+
+    int count;
+    int i;
+
+    count = loadStock(stock);
+
+    printf("\n--- All Stock ---\n");
+
+    if (count == 0)
+    {
+        printf("No stock available!\n");
+        return;
+    }
+
+    printf("ITEM CODE\tLOCATION\tQUANTITY\n");
+
+    for (i = 0; i < count; i++)
+    {
+        printf("%s\t\t%s\t\t%d\n",
+               stock[i].itemCode,
+               stock[i].locID,
+               stock[i].quantity);
+    }
+}
+//option 3: display stock location
+void displayStockByLocation(void)
+{
+    StockEntry stock[MAX];
+
+    char location[10];
+
+    int count;
+    int i;
+    int found = 0;
+    int total = 0;
+
+    printf("\nEnter location ID: ");
+    scanf("%9s", location);
+
+    if (!locationExists(location))
+    {
+        printf("Location does not exist!\n");
+        return;
+    }
+
+    count = loadStock(stock);
+
+    printf("\n--- Stock by Location ---\n");
+
+    for (i = 0; i < count; i++)
+    {
+        if (strcmp(stock[i].locID, location) == 0)
+        {
+            printf("Item: %s  Quantity: %d\n",
+                   stock[i].itemCode,
+                   stock[i].quantity);
+
+            total += stock[i].quantity;
+
+            found = 1;
+        }
+    }
+
+    if (found == 0)
+    {
+        printf("No stock in this location!\n");
+    }
+    else
+    {
+        printf("Total quantity: %d\n", total);
+    }
+}
+//option 4: low stock report
+void checkLowStock(void)
+{
+    StockEntry stock[MAX];
+
+    int count;
+    int i;
+    int found = 0;
+
+    count = loadStock(stock);
+
+    printf("\n--- Low Stock Report ---\n");
+
+    for (i = 0; i < count; i++)
+    {
+        if (stock[i].quantity <= LOW_STOCK)
+        {
+            printf("Item: %s  Location: %s  Quantity: %d\n",
+                   stock[i].itemCode,
+                   stock[i].locID,
+                   stock[i].quantity);
+
+            found = 1;
+        }
+    }
+
+    if (found == 0)
+    {
+        printf("No low stock items!\n");
+    }
+>>>>>>> store_m
 }
