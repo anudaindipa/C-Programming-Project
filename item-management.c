@@ -17,6 +17,7 @@ static const char *VALID_CATEGORIES[NUM_CATEGORIES] = {
     "ELECTRONICS", "FURNITURE", "STATIONERY", "LABEQUIPMENT", "OTHER"
 };
 
+//------------- item operations -------------
 
 void registerItem(void) {
     Item it;
