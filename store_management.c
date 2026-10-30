@@ -270,7 +270,7 @@ void addStock(void)
 
     printf("Stock successfully updated!\n");
 }
-// OPTION 2: Display all stock
+//option 2: display all
 void displayStock(void)
 {
     StockEntry stock[MAX];
