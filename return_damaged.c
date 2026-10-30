@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -7,3 +8,5 @@
 #define LOC_FILE    "locations.txt"
 #define STOCK_FILE  "stock.txt"
 #define MAX_RECORDS 1000
+
+
