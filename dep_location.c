@@ -225,6 +225,32 @@ static void updateDepartment(void) {
 }
 
 
+/* Read location records from locations.txt into an array. */
+static int loadLocations(Location locations[]) {
+    FILE *fp;
+    int count = 0;
+
+    fp = fopen(LOC_FILE, "r");
+
+    if (fp == NULL) {
+        return 0;
+    }
+
+    while (count < MAX_RECORDS &&
+           fscanf(fp, " %9[^|]|%59[^|]|%9[^|]|%14[^\r\n]",
+                  locations[count].id,
+                  locations[count].name,
+                  locations[count].deptCode,
+                  locations[count].type) == 4) {
+        count++;
+    }
+
+    fclose(fp);
+
+    return count;
+}
+
+
 void departmentMenu(void) {
     int choice;
     do {
