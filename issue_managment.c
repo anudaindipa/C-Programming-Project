@@ -114,3 +114,20 @@ void issueItem(void) {
            qty, name, item, location, id, date);
     printf("Remaining stock: %d\n", stock[index].qty);
 }
+
+void displayIssuedItems(void) {
+    Issue issues[MAX];
+    int n = loadIssues(issues), i;
+    printf("\n--- All Issued Items (%d) ---\n", n);
+    if (n == 0) {
+        printf("No issue records found.\n");
+        return;
+    }
+    printf("%-10s %-9s %-9s %5s %-25s %s\n",
+           "ID", "ITEM", "LOCATION", "QTY", "ISSUED TO", "DATE");
+    for (i = 0; i < n; i++) {
+        printf("%-10s %-9s %-9s %5d %-25s %s\n",
+               issues[i].id, issues[i].item, issues[i].location,
+               issues[i].qty, issues[i].person, issues[i].date);
+    }
+}
