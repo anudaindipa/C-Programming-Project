@@ -13,6 +13,9 @@ typedef struct {
     double price;
 } Item;
 
+static const char *VALID_CATEGORIES[NUM_CATEGORIES] = {
+    "ELECTRONICS", "FURNITURE", "STATIONERY", "LABEQUIPMENT", "OTHER"
+};
 
 // ------------- menu fuction ----------------
 
