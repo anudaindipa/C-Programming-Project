@@ -15,7 +15,9 @@ typedef struct{
 
 static void flushinputline(void){
     int c;
-    while ((c=getchar()) != '\n' &)
+    while ((c=getchar()) != '\n'  && c != EOF){
+        
+    }
 }
 
 static int locationExists(const char locID[]) {
