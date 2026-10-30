@@ -4,30 +4,4 @@
 
 #define MAX 1000
 
-typedef struct {
-    char id[16], item[10], location[10], person[40], date[12];
-    int qty;
-} Issue;
-
-typedef struct {
-    char item[10], location[10];
-    int qty;
-} Stock;
-static void clearInput(void) {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF) { }
-}
-
-static void removeNewline(char s[]) {
-    s[strcspn(s, "\n")] = '\0';
-}
-
-static int readCode(const char prompt[], char code[]) {
-    printf("%s", prompt);
-    if (scanf("%9s", code) != 1) {
-        clearInput();
-        return 0;
-    }
-    clearInput();
-    return 1;
 
