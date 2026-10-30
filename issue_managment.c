@@ -168,6 +168,7 @@ static void clearInput(void) {
 static void removeNewline(char s[]) {
     s[strcspn(s, "\n")] = '\0';
 }
+//read a single word
 static int readCode(const char prompt[], char code[]) {
     printf("%s", prompt);
     if (scanf("%9s", code) != 1) {
