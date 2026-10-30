@@ -133,6 +133,73 @@ void processReturn(void) {
            recID, itemCode, locID, stock[idx].quantity);
 }
 
+void reportDamage(void) {
+    char itemCode[10], locID[10], reason[50], recID[16], today[12];
+    int qty, idx, n;
+    StockEntry stock[MAX_RECORDS];
+    FILE *fp;
+
+    printf("\n----- Report Damaged / Unusable Item -----\n");
+
+    printf("Enter item code: ");
+    scanf("%9s", itemCode);
+    flushInputLine();
+    if (!getItemInfo(itemCode, NULL, 0, NULL)) {
+        printf("Item \"%s\" does not exist.\n", itemCode);
+        return;
+    }
+
+    printf("Enter location ID where the damage occurred: ");
+    scanf("%9s", locID);
+    flushInputLine();
+    if (!locationExists(locID)) {
+        printf("Location \"%s\" does not exist.\n", locID);
+        return;
+    }
+
+    n = loadStock(stock, MAX_RECORDS);
+    idx = findStockIndex(stock, n, itemCode, locID);
+
+    printf("Enter quantity damaged: ");
+    if (scanf("%d", &qty) != 1 || qty <= 0) {
+        printf("Invalid quantity.\n");
+        flushInputLine();
+        return;
+    }
+    flushInputLine();
+
+    if (idx == -1 || stock[idx].quantity < qty) {
+        printf("Cannot write off %d unit(s): only %d unit(s) of \"%s\" are in stock at \"%s\".\n",
+               qty, (idx == -1) ? 0 : stock[idx].quantity, itemCode, locID);
+        return;
+    }
+
+    printf("Reason (e.g. Screen cracked / Water damage): ");
+    fgets(reason, sizeof(reason), stdin);
+    trimNewline(reason);
+    if (!validateTextField(reason)) {
+        printf("Invalid entry.\n");
+        return;
+    }
+
+    stock[idx].quantity -= qty;
+    saveStock(stock, n);
+
+    generateRecordID(recID);
+    getTodayDate(today, (int)sizeof(today));
+
+    fp = fopen(RETURN_FILE, "a");
+    if (fp == NULL) {
+        printf("Error: could not save damage record.\n");
+        return;
+    }
+    fprintf(fp, "%s|%s|%s|%d|DAMAGE|%s|%s\n",
+            recID, itemCode, locID, qty, reason, today);
+    fclose(fp);
+
+    printf("Damage recorded (%s). Stock of %s at %s is now %d unit(s).\n",
+           recID, itemCode, locID, stock[idx].quantity);
+}
 
 static void flushInputLine(void) {
     int c;
