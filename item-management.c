@@ -33,6 +33,11 @@ static void trimNewline(char s[]) {
     }
 }
 
+static void pauseScreen(void) {
+    printf("\nPress ENTER to continue...");
+    flushInputLine();
+}
+
 //------------- item operations -------------
 
 //register item...
