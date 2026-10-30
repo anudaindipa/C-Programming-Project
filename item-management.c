@@ -125,6 +125,58 @@ void searchItem(void) {
     if (!found) printf("No matching item found.\n");
 }
 
+//item update...
+void updateItem(void) {
+    Item items[MAX_ITEMS];
+    int n = loadItems(items, MAX_ITEMS);
+    char code[10];
+    int i, idx = -1;
+    FILE *fp;
+
+    printf("\nEnter item code to update: ");
+    scanf("%9s", code);
+    flushInputLine();
+
+    for (i = 0; i < n; i++) {
+        if (strcmp(items[i].code, code) == 0) {
+            idx = i;
+            break;
+        }
+    }
+    if (idx == -1) {
+        printf("Item \"%s\" not found.\n", code);
+        return;
+    }
+
+    printf("Current name: %s\nEnter new name: ", items[idx].name);
+    fgets(items[idx].name, sizeof(items[idx].name), stdin);
+    trimNewline(items[idx].name);
+    if (!validateTextField(items[idx].name)) {
+        printf("Invalid name. Update cancelled.\n");
+        return;
+    }
+
+    printf("Current price: %.2f\nEnter new price: ", items[idx].price);
+    if (scanf("%lf", &items[idx].price) != 1 || items[idx].price < 0) {
+        printf("Invalid price. Update cancelled.\n");
+        flushInputLine();
+        return;
+    }
+    flushInputLine();
+
+    fp = fopen(ITEM_FILE, "w");
+    if (fp == NULL) {
+        printf("Error: could not save changes.\n");
+        return;
+    }
+    for (i = 0; i < n; i++) {
+        fprintf(fp, "%s|%s|%s|%s|%.2f\n",
+                items[i].code, items[i].name, items[i].category,
+                items[i].unit, items[i].price);
+    }
+    fclose(fp);
+    printf("Item \"%s\" updated successfully.\n", code);
+}
 
 
 // ------------- menu fuction ----------------
