@@ -210,3 +210,16 @@ static int findLocation(const char code[]) {
     fclose(f);
     return 0;
 }
+//loadstock function
+static int loadStock(Stock stock[]) {
+    FILE *f = fopen("stock.txt", "r");
+    char line[100];
+    int n = 0;
+    if (f == NULL) return -1;
+    while (n < MAX && fgets(line, sizeof line, f)) {
+        if (sscanf(line, "%9[^|]|%9[^|]|%d", stock[n].item,
+                   stock[n].location, &stock[n].qty) == 3) n++;
+    }
+    fclose(f);
+    return n;
+}
