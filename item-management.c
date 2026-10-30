@@ -66,6 +66,25 @@ static int validateCategory(const char category[]) {
     return 0;
 }
 
+static int loadItems(Item itemArray[], int maxRecords) {
+    FILE *fp = fopen(ITEM_FILE, "r");
+    int count = 0;
+
+    if (fp == NULL) return 0;
+
+    while (count < maxRecords &&
+           fscanf(fp, " %9[^|]|%59[^|]|%24[^|]|%11[^|]|%lf",
+                  itemArray[count].code,
+                  itemArray[count].name,
+                  itemArray[count].category,
+                  itemArray[count].unit,
+                  &itemArray[count].price) == 5) {
+        count++;
+    }
+    fclose(fp);
+    return count;
+}
+
 //------------- item operations -------------
 
 //register item...
