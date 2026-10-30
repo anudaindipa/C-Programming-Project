@@ -44,6 +44,20 @@ static int validateTextField(const char text[]) {
     return 1;
 }
 
+static int sameIgnoreCase(const char a[], const char b[]) {
+    int i;
+    char ca, cb;
+
+    for (i = 0; a[i] != '\0' && b[i] != '\0'; i++) {
+        ca = a[i];
+        cb = b[i];
+        if (ca >= 'a' && ca <= 'z') ca = (char)(ca - 32);
+        if (cb >= 'a' && cb <= 'z') cb = (char)(cb - 32);
+        if (ca != cb) return 0;
+    }
+    return a[i] == b[i];
+}
+
 //------------- item operations -------------
 
 //register item...
