@@ -131,3 +131,22 @@ void displayIssuedItems(void) {
                issues[i].qty, issues[i].person, issues[i].date);
     }
 }
+// Adding option 3 searchIssueByLocation function
+void searchIssueByLocation(void) {
+    Issue issues[MAX];
+    char location[10];
+    int n = loadIssues(issues), i, found = 0, total = 0;
+    if (!readCode("Location ID: ", location)) return;
+    printf("\n--- Issues at %s ---\n", location);
+    for (i = 0; i < n; i++) {
+        if (strcmp(issues[i].location, location) == 0) {
+            printf("%s | %s | Qty: %d | %s | %s\n",
+                   issues[i].id, issues[i].item, issues[i].qty,
+                   issues[i].person, issues[i].date);
+            total += issues[i].qty;
+            found = 1;
+        }
+    }
+    if (found) printf("Total units issued: %d\n", total);
+    else printf("No issues found for this location.\n");
+}
