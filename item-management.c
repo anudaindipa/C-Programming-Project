@@ -96,6 +96,8 @@ static int isItemExist(const char code[]) {
     return 0;
 }
 
+//-------------- item operations --------------
+
 static char *generateItemCode(void) {
     static char newCode[16];
     Item items[MAX_ITEMS];
