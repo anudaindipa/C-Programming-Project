@@ -114,3 +114,139 @@ void issueItem(void) {
            qty, name, item, location, id, date);
     printf("Remaining stock: %d\n", stock[index].qty);
 }
+// option 2 displayIssueditems function
+void displayIssuedItems(void) {
+    Issue issues[MAX];
+    int n = loadIssues(issues), i;
+    printf("\n--- All Issued Items (%d) ---\n", n);
+    if (n == 0) {
+        printf("No issue records found.\n");
+        return;
+    }
+    printf("%-10s %-9s %-9s %5s %-25s %s\n",
+           "ID", "ITEM", "LOCATION", "QTY", "ISSUED TO", "DATE");
+    for (i = 0; i < n; i++) {
+        printf("%-10s %-9s %-9s %5d %-25s %s\n",
+               issues[i].id, issues[i].item, issues[i].location,
+               issues[i].qty, issues[i].person, issues[i].date);
+    }
+}
+// Adding option 3 searchIssueByLocation function
+void searchIssueByLocation(void) {
+    Issue issues[MAX];
+    char location[10];
+    int n = loadIssues(issues), i, found = 0, total = 0;
+    if (!readCode("Location ID: ", location)) return;
+    printf("\n--- Issues at %s ---\n", location);
+    for (i = 0; i < n; i++) {
+        if (strcmp(issues[i].location, location) == 0) {
+            printf("%s | %s | Qty: %d | %s | %s\n",
+                   issues[i].id, issues[i].item, issues[i].qty,
+                   issues[i].person, issues[i].date);
+            total += issues[i].qty;
+            found = 1;
+        }
+    }
+    if (found) printf("Total units issued: %d\n", total);
+    else printf("No issues found for this location.\n");
+}
+typedef struct {
+    char id[16], item[10], location[10], person[40], date[12];
+    int qty;
+} Issue;
+
+typedef struct {
+    char item[10], location[10];
+    int qty;
+} Stock; 
+// Remove any extra characters 
+static void clearInput(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) { }
+}
+
+static void removeNewline(char s[]) {
+    s[strcspn(s, "\n")] = '\0';
+}
+//read a single word
+static int readCode(const char prompt[], char code[]) {
+    printf("%s", prompt);
+    if (scanf("%9s", code) != 1) {
+        clearInput();
+        return 0;
+    }
+    clearInput();
+    return 1;
+}
+// findItem function
+static int findItem(const char code[], char itemName[]) {
+    FILE *f = fopen("items.txt", "r");
+    char line[220], id[10], name[60], category[25], unit[12];
+    double price;
+    if (f == NULL) return 0;
+    while (fgets(line, sizeof line, f)) {
+        if (sscanf(line, "%9[^|]|%59[^|]|%24[^|]|%11[^|]|%lf",
+                   id, name, category, unit, &price) == 5 && strcmp(id, code) == 0) {
+            strcpy(itemName, name);
+            fclose(f);
+            return 1;
+        }
+    }
+    fclose(f);
+    return 0;
+}
+// findLocation function
+static int findLocation(const char code[]) {
+    FILE *f = fopen("locations.txt", "r");
+    char line[220], id[10], name[60], department[10], type[15];
+    if (f == NULL) return 0;
+    while (fgets(line, sizeof line, f)) {
+        if (sscanf(line, "%9[^|]|%59[^|]|%9[^|]|%14[^\n]",
+                   id, name, department, type) == 4 && strcmp(id, code) == 0) {
+            fclose(f);
+            return 1;
+        }
+    }
+    fclose(f);
+    return 0;
+}
+//loadstock function
+static int loadStock(Stock stock[]) {
+    FILE *f = fopen("stock.txt", "r");
+    char line[100];
+    int n = 0;
+    if (f == NULL) return -1;
+    while (n < MAX && fgets(line, sizeof line, f)) {
+        if (sscanf(line, "%9[^|]|%9[^|]|%d", stock[n].item,
+                   stock[n].location, &stock[n].qty) == 3) n++;
+    }
+    fclose(f);
+    return n;
+}
+// savestock
+static int saveStock(Stock stock[], int n) {
+    FILE *f = fopen("stock.txt", "w");
+    int i, ok = 1;
+    if (f == NULL) return 0;
+    for (i = 0; i < n; i++) {
+        if (fprintf(f, "%s|%s|%d\n", stock[i].item,
+                    stock[i].location, stock[i].qty) < 0) ok = 0;
+    }
+    if (fclose(f) != 0) ok = 0;
+    return ok;
+}
+
+// loadIssues 
+static int loadIssues(Issue issues[]) {
+    FILE *f = fopen("issues.txt", "r");
+    char line[200];
+    int n = 0;
+    if (f == NULL) return 0;
+    while (n < MAX && fgets(line, sizeof line, f)) {
+        if (sscanf(line, "%15[^|]|%9[^|]|%9[^|]|%d|%39[^|]|%11[^\n]",
+                   issues[n].id, issues[n].item, issues[n].location,
+                   &issues[n].qty, issues[n].person, issues[n].date) == 6) n++;
+    }
+    fclose(f);
+    return n;
+}
