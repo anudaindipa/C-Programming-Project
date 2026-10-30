@@ -150,6 +150,80 @@ void searchDepartment(void) {
 }
 
 
+/* Update the name and type of an existing department. */
+static void updateDepartment(void) {
+    Department departments[MAX_RECORDS];
+    char code[10];
+    char newName[60];
+    char newType[12];
+    FILE *fp;
+    int count, i, found = -1;
+
+    count = loadDepartments(departments);
+
+    printf("Enter department code to update: ");
+    scanf("%9s", code);
+    clearInputBuffer();
+    makeUppercase(code);
+
+    for (i = 0; i < count; i++) {
+        if (strcmp(departments[i].code, code) == 0) {
+            found = i;
+        }
+    }
+
+    if (found == -1) {
+        printf("Department not found.\n");
+        return;
+    }
+
+    printf("Current name: %s\n", departments[found].name);
+    printf("Enter new name (ENTER to keep): ");
+    fgets(newName, sizeof(newName), stdin);
+    removeNewline(newName);
+
+    if (strcmp(newName, "") != 0) {
+        if (strchr(newName, '|') != NULL) {
+            printf("Name cannot contain the | character. Update cancelled.\n");
+            return;
+        }
+        strcpy(departments[found].name, newName);
+    }
+
+    printf("Current type: %s\n", departments[found].type);
+    printf("Enter new type (ACADEMIC / COMMON): ");
+    fgets(newType, sizeof(newType), stdin);
+    removeNewline(newType);
+    makeUppercase(newType);
+
+    if (strcmp(newType, "") != 0) {
+        if (strcmp(newType, "ACADEMIC") != 0 &&
+            strcmp(newType, "COMMON") != 0) {
+            printf("Invalid type. Update cancelled.\n");
+            return;
+        }
+
+        strcpy(departments[found].type, newType);
+    }
+
+    fp = fopen(DEPT_FILE, "w");
+
+    if (fp == NULL) {
+        printf("Cannot save department data.\n");
+        return;
+    }
+
+    for (i = 0; i < count; i++) {
+        fprintf(fp, "%s|%s|%s\n",
+                departments[i].code,
+                departments[i].name,
+                departments[i].type);
+    }
+
+    fclose(fp);
+    printf("Department updated successfully.\n");
+}
+
 
 void departmentMenu(void) {
     int choice;
@@ -158,6 +232,7 @@ void departmentMenu(void) {
         printf("1. Add Department / Common Area\n");
         printf("2. Display Departments\n");
         printf("3. Search Department\n");
+        printf("4. Update Department\n");
         printf("0. Back to Main Menu\n");
         printf("Enter choice: ");
 
@@ -182,6 +257,9 @@ void departmentMenu(void) {
                 break;
             case 3:
                 searchDepartment();
+                break;
+            case 4:
+                updateDepartment();
                 break;
             case 0:
                 printf("Returning to main menu.\n");
