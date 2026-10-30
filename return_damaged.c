@@ -392,3 +392,11 @@ static int loadStock(StockEntry stock[], int maxRecords) {
     fclose(fp);
     return count;
 }
+
+static void trimNewline(char s[]) {
+    int len = (int)strlen(s);
+    while (len > 0 && (s[len - 1] == '\n' || s[len - 1] == '\r')) {
+        len--;
+        s[len] = '\0';
+    }
+}
