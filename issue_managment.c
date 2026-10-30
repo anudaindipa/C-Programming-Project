@@ -3,7 +3,7 @@
 #include <time.h>
 
 #define MAX 1000
-
+/* Display main function */
 void issueMenu(void) {
     int choice;
     do {
@@ -29,7 +29,7 @@ void issueMenu(void) {
         }
     } while (choice != 0);
 }
-
+/* option 1 issueItem function*/
 void issueItem(void) {
     char item[10], location[10], name[60], person[40], id[16], date[12];
     Stock stock[MAX];
