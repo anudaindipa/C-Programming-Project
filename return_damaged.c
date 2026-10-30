@@ -359,3 +359,92 @@ static void getTodayDate(char *buffer, int size) {
         strcpy(buffer, "0000-00-00");
     }
 }
+static int getItemInfo(const char code[], char nameOut[],
+                       int nameOutSize, double *priceOut) {
+    FILE *fp = fopen(ITEM_FILE, "r");
+    char lineCode[10], lineName[60], category[25], unit[12];
+    double price;
+    int found = 0;
+
+    if (fp == NULL) return 0;
+
+    while (fscanf(fp, " %9[^|]|%59[^|]|%24[^|]|%11[^|]|%lf",
+                  lineCode, lineName, category, unit, &price) == 5) {
+        if (strcmp(lineCode, code) == 0) {
+            if (nameOut != NULL && nameOutSize > 0) {
+                strncpy(nameOut, lineName, (size_t)nameOutSize - 1);
+                nameOut[nameOutSize - 1] = '\0';
+            }
+            if (priceOut != NULL) *priceOut = price;
+            found = 1;
+            break;
+        }
+    }
+    fclose(fp);
+    return found;
+
+}
+
+static int locationExists(const char locID[]) {
+    FILE *fp = fopen(LOC_FILE, "r");
+    char id[10], name[60], deptCode[10], type[15];
+    int found = 0;
+
+    if (fp == NULL) return 0;
+
+    while (fscanf(fp, " %9[^|]|%59[^|]|%9[^|]|%14[^\r\n]",
+                  id, name, deptCode, type) == 4) {
+        if (strcmp(id, locID) == 0) {
+            found = 1;
+            break;
+        }
+    }
+    fclose(fp);
+    return found;
+}
+
+
+static int loadStock(StockEntry stock[], int maxRecords) {
+    FILE *fp = fopen(STOCK_FILE, "r");
+    int count = 0;
+
+    if (fp == NULL) return 0;
+
+    while (count < maxRecords &&
+           fscanf(fp, " %9[^|]|%9[^|]|%d",
+                  stock[count].itemCode,
+                  stock[count].locID,
+                  &stock[count].quantity) == 3) {
+        count++;
+    }
+    fclose(fp);
+    return count;
+}
+
+static void saveStock(StockEntry stock[], int n) {
+    FILE *fp = fopen(STOCK_FILE, "w");
+    int i;
+
+    if (fp == NULL) {
+        printf("Error: could not update stock file.\n");
+        return;
+    }
+    for (i = 0; i < n; i++) {
+        fprintf(fp, "%s|%s|%d\n",
+                stock[i].itemCode, stock[i].locID, stock[i].quantity);
+    }
+    fclose(fp);
+}
+
+static int findStockIndex(StockEntry stock[], int n,
+                          const char itemCode[], const char locID[]) {
+    int i;
+    for (i = 0; i < n; i++) {
+        if (strcmp(stock[i].itemCode, itemCode) == 0 &&
+            strcmp(stock[i].locID, locID) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
