@@ -195,3 +195,18 @@ static int findItem(const char code[], char itemName[]) {
     fclose(f);
     return 0;
 }
+// findLocation function
+static int findLocation(const char code[]) {
+    FILE *f = fopen("locations.txt", "r");
+    char line[220], id[10], name[60], department[10], type[15];
+    if (f == NULL) return 0;
+    while (fgets(line, sizeof line, f)) {
+        if (sscanf(line, "%9[^|]|%59[^|]|%9[^|]|%14[^\n]",
+                   id, name, department, type) == 4 && strcmp(id, code) == 0) {
+            fclose(f);
+            return 1;
+        }
+    }
+    fclose(f);
+    return 0;
+}
