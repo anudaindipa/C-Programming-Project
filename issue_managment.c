@@ -249,6 +249,7 @@ static int loadIssues(Issue issues[]) {
     }
     fclose(f);
     return n;
+}
 //nextIssueID
 static void nextIssueID(char id[]) {
     Issue issues[MAX];
@@ -258,5 +259,4 @@ static void nextIssueID(char id[]) {
             largest = number;
     }
     sprintf(id, "ISS%04d", largest + 1);
-}
 }
