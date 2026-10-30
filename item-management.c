@@ -85,6 +85,17 @@ static int loadItems(Item itemArray[], int maxRecords) {
     return count;
 }
 
+static int isItemExist(const char code[]) {
+    Item items[MAX_ITEMS];
+    int n = loadItems(items, MAX_ITEMS);
+    int i;
+
+    for (i = 0; i < n; i++) {
+        if (strcmp(items[i].code, code) == 0) return 1;
+    }
+    return 0;
+}
+
 //------------- item operations -------------
 
 //register item...
