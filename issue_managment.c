@@ -159,7 +159,7 @@ typedef struct {
     char item[10], location[10];
     int qty;
 } Stock; 
-
+// Remove any extra characters 
 static void clearInput(void) {
     int c;
     while ((c = getchar()) != '\n' && c != EOF) { }
