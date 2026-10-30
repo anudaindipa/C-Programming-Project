@@ -3,6 +3,22 @@
 #include <time.h>
 
 #define MAX 1000
+
+typedef struct {
+    char id[16];
+    char item[10];
+    char location[10];
+    char person[40];
+    char date[12];
+    int qty;
+} Issue;
+
+typedef struct {
+    char item[10];
+    char location[10];
+    int qty;
+} Stock;
+
 /* Display main function */
 void issueMenu(void) {
     int choice;
