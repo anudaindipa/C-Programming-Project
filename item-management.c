@@ -75,6 +75,28 @@ void registerItem(void) {
     printf("Item \"%s\" (%s) registered successfully.\n", it.code, it.name);
 }
 
+//display item...
+void displayItems(void) {
+    Item items[MAX_ITEMS];
+    int n = loadItems(items, MAX_ITEMS);
+    int i;
+
+    printf("\n----- Registered Items (%d) -----\n", n);
+    if (n == 0) {
+        printf("No items registered yet.\n");
+        return;
+    }
+
+    printf("%-8s %-24s %-14s %-6s %10s\n",
+           "CODE", "NAME", "CATEGORY", "UNIT", "PRICE");
+    printf("----------------------------------------------------------------------\n");
+    for (i = 0; i < n; i++) {
+        printf("%-8s %-24s %-14s %-6s %10.2f\n",
+               items[i].code, items[i].name, items[i].category,
+               items[i].unit, items[i].price);
+    }
+}
+
 
 // ------------- menu fuction ----------------
 
