@@ -1,5 +1,6 @@
-#include <stdio.h>
-#include <string.h>
+
+#include<stdio.h>
+#include<string.h>
 
 #define MAX 1000
 #define STOCK_FILE "stock.txt"
@@ -185,5 +186,4 @@ void saveStock(StockEntry stock[], int count)
     }
 
     fclose(fp);
-} 
-
+}
