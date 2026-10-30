@@ -221,6 +221,46 @@ void displayReturns(void) {
     }
 }
 
+void sortAndDisplayDamageReports(void) {
+    ReturnRecord rec[MAX_RECORDS];
+    int n = loadReturns(rec, MAX_RECORDS);
+    ReturnRecord damaged[MAX_RECORDS];
+    ReturnRecord temp;
+    int i, j, dCount = 0;
+
+    for (i = 0; i < n; i++) {
+        if (strcmp(rec[i].type, "DAMAGE") == 0) {
+            damaged[dCount] = rec[i];
+            dCount++;
+        }
+    }
+
+    for (i = 0; i < dCount - 1; i++) {
+        for (j = 0; j < dCount - 1 - i; j++) {
+            if (damaged[j].quantity < damaged[j + 1].quantity) {
+                temp = damaged[j];
+                damaged[j] = damaged[j + 1];
+                damaged[j + 1] = temp;
+            }
+        }
+    }
+
+    printf("\n----- Damage Reports Sorted by Quantity (highest first) -----\n");
+    if (dCount == 0) {
+        printf("No damage has been reported yet.\n");
+        return;
+    }
+
+    printf("%-7s %-8s %-8s %5s %-20s %-10s\n",
+           "ID", "ITEM", "LOC", "QTY", "REASON", "DATE");
+    printf("--------------------------------------------------------------------\n");
+    for (i = 0; i < dCount; i++) {
+        printf("%-7s %-8s %-8s %5d %-20s %-10s\n",
+               damaged[i].recordID, damaged[i].itemCode, damaged[i].locID,
+               damaged[i].quantity, damaged[i].reason, damaged[i].date);
+    }
+}
+
 static void flushInputLine(void) {
     int c;
     while ((c = getchar()) != '\n' && c != EOF) {
