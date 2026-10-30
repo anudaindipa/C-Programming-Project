@@ -96,6 +96,20 @@ static int isItemExist(const char code[]) {
     return 0;
 }
 
+static char *generateItemCode(void) {
+    static char newCode[16];
+    Item items[MAX_ITEMS];
+    int n = loadItems(items, MAX_ITEMS);
+    int next = n + 1;
+
+    sprintf(newCode, "IT%03d", next);
+    while (isItemExist(newCode)) {
+        next++;
+        sprintf(newCode, "IT%03d", next);
+    }
+    return newCode;
+}
+
 //------------- item operations -------------
 
 //register item...
