@@ -86,4 +86,31 @@ void issueItem(void) {
         printf("Invalid person/purpose.\n");
         return;
     }
+     nextIssueID(id);
+    now = time(NULL);
+    today = localtime(&now);
+    if (today != NULL) strftime(date, sizeof date, "%Y-%m-%d", today);
+    else strcpy(date, "0000-00-00");
+
+    /* Open the issue file before changing stock. */
+    f = fopen("issues.txt", "a");
+    if (f == NULL) {
+        printf("Cannot open issues.txt. Stock unchanged.\n");
+        return;
+    }
+    stock[index].qty -= qty;
+    if (!saveStock(stock, n)) {
+        fclose(f);
+        printf("Could not save stock. Issue was not recorded. Check files.\n");
+        return;
+    }
+    i = fprintf(f, "%s|%s|%s|%d|%s|%s\n",
+          id, item, location, qty, person, date);
+    if (fclose(f) != 0 || i < 0) {
+        printf("Issue record save failed. Check stock and issue files.\n");
+        return;
+    }
+    printf("Issued %d x %s (%s) at %s. ID: %s, Date: %s\n",
+           qty, name, item, location, id, date);
+    printf("Remaining stock: %d\n", stock[index].qty);
 }
