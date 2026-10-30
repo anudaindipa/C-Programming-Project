@@ -150,3 +150,12 @@ void searchIssueByLocation(void) {
     if (found) printf("Total units issued: %d\n", total);
     else printf("No issues found for this location.\n");
 }
+typedef struct {
+    char id[16], item[10], location[10], person[40], date[12];
+    int qty;
+} Issue;
+
+typedef struct {
+    char item[10], location[10];
+    int qty;
+} Stock; 
