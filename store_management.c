@@ -23,6 +23,22 @@ void checkLowStock(void);
 void stockMenu(void);
 
 
+// Structure for stock information
+typedef struct
+{
+    char itemCode[10];
+    char locID[10];
+    int quantity;
+
+} StockEntry;
+
+// Function declarations
+void addStock(void);
+void displayStock(void);
+void displayStockByLocation(void);
+void checkLowStock(void);
+void stockMenu(void);
+
 //main function stock management
 void stockMenu(void)
 {
