@@ -159,3 +159,12 @@ typedef struct {
     char item[10], location[10];
     int qty;
 } Stock; 
+
+static void clearInput(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) { }
+}
+
+static void removeNewline(char s[]) {
+    s[strcspn(s, "\n")] = '\0';
+}
