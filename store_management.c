@@ -298,7 +298,7 @@ void displayStock(void)
                stock[i].quantity);
     }
 }
-//option 3: display stock by location
+//option 3: display stock location
 void displayStockByLocation(void)
 {
     StockEntry stock[MAX];
@@ -344,5 +344,36 @@ void displayStockByLocation(void)
     else
     {
         printf("Total quantity: %d\n", total);
+    }
+}
+//option 4: low stock report
+void checkLowStock(void)
+{
+    StockEntry stock[MAX];
+
+    int count;
+    int i;
+    int found = 0;
+
+    count = loadStock(stock);
+
+    printf("\n--- Low Stock Report ---\n");
+
+    for (i = 0; i < count; i++)
+    {
+        if (stock[i].quantity <= LOW_STOCK)
+        {
+            printf("Item: %s  Location: %s  Quantity: %d\n",
+                   stock[i].itemCode,
+                   stock[i].locID,
+                   stock[i].quantity);
+
+            found = 1;
+        }
+    }
+
+    if (found == 0)
+    {
+        printf("No low stock items!\n");
     }
 }
