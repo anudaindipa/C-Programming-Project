@@ -178,6 +178,44 @@ void updateItem(void) {
     printf("Item \"%s\" updated successfully.\n", code);
 }
 
+//display item by category...
+void displayItemsByCategory(void) {
+    Item items[MAX_ITEMS];
+    int n = loadItems(items, MAX_ITEMS);
+    int counted[MAX_ITEMS];
+    int i, j, count;
+    double totalValue;
+
+    for (i = 0; i < n; i++) counted[i] = 0;
+
+    printf("\n----- Items Grouped by Category -----\n");
+    if (n == 0) {
+        printf("No items registered yet.\n");
+        return;
+    }
+
+    for (i = 0; i < n; i++) {
+        if (counted[i]) continue;   /* already printed in an earlier group */
+
+        count = 0;
+        totalValue = 0.0;
+        printf("\nCategory: %s\n", items[i].category);
+        printf("%-8s %-24s %10s\n", "CODE", "NAME", "PRICE");
+
+        for (j = i; j < n; j++) {
+            if (!counted[j] &&
+                strcmp(items[j].category, items[i].category) == 0) {
+                printf("%-8s %-24s %10.2f\n",
+                       items[j].code, items[j].name, items[j].price);
+                counted[j] = 1;
+                count++;
+                totalValue += items[j].price;
+            }
+        }
+        printf("  -> %d item(s), combined listed value Rs. %.2f\n",
+               count, totalValue);
+    }
+}
 
 // ------------- menu fuction ----------------
 
