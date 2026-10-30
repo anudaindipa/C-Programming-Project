@@ -7,6 +7,22 @@
 #define LOC_FILE "locations.txt"
 #define LOW_STOCK 5
 
+// Structure for stock information
+typedef struct
+{
+    char itemCode[10];
+    char locID[10];
+    int quantity;
+
+} StockEntry;
+
+// Function declarations
+void addStock(void);
+void displayStock(void);
+void displayStockByLocation(void);
+void checkLowStock(void);
+void stockMenu(void);
+
 //main function stock management
 void stockMenu(void)
 {
@@ -63,22 +79,6 @@ void stockMenu(void)
 
     } while (choice != 0);
 }
-
-// Structure for stock information
-typedef struct
-{
-    char itemCode[10];
-    char locID[10];
-    int quantity;
-
-} StockEntry;
-
-// Function declarations
-void addStock(void);
-void displayStock(void);
-void displayStockByLocation(void);
-void checkLowStock(void);
-void stockMenu(void);
 
 // Check whether item exists
 int itemExists(char code[])
