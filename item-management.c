@@ -19,6 +19,7 @@ static const char *VALID_CATEGORIES[NUM_CATEGORIES] = {
 
 //------------- item operations -------------
 
+//register item...
 void registerItem(void) {
     Item it;
     FILE *fp;
