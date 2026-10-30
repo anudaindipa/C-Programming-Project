@@ -7,3 +7,71 @@
 
 #include <stdio.h>
 #include <string.h>
+
+#define ITEM_FILE      "items.txt"
+#define MAX_ITEMS      500
+#define NUM_CATEGORIES 5
+
+typedef struct {
+    char code[10];
+    char name[60];
+    char category[25];
+    char unit[12];
+    double price;
+} Item;
+
+static const char *VALID_CATEGORIES[NUM_CATEGORIES] = {
+    "ELECTRONICS", "FURNITURE", "STATIONERY", "LABEQUIPMENT", "OTHER"
+};
+
+//-----------------function of filtering charactors-------------------------
+
+static void flushInputLine(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) {
+        /* discard */
+    }
+}
+
+static void trimNewline(char s[]) {
+    int len = (int)strlen(s);
+    while (len > 0 && (s[len - 1] == '\n' || s[len - 1] == '\r')) {
+        len--;
+        s[len] = '\0';
+    }
+}
+
+static void pauseScreen(void) {
+    printf("\nPress ENTER to continue...");
+    flushInputLine();
+}
+
+static int validateTextField(const char text[]) {
+    if (strlen(text) == 0) return 0;
+    if (strchr(text, '|') != NULL) return 0;
+    return 1;
+}
+
+//---------------check valid lists and compare strings without case sensitive-------------------
+
+static int sameIgnoreCase(const char a[], const char b[]) {
+    int i;
+    char ca, cb;
+
+    for (i = 0; a[i] != '\0' && b[i] != '\0'; i++) {
+        ca = a[i];
+        cb = b[i];
+        if (ca >= 'a' && ca <= 'z') ca = (char)(ca - 32);
+        if (cb >= 'a' && cb <= 'z') cb = (char)(cb - 32);
+        if (ca != cb) return 0;
+    }
+    return a[i] == b[i];
+}
+
+static int validateCategory(const char category[]) {
+    int i;
+    for (i = 0; i < NUM_CATEGORIES; i++) {
+        if (sameIgnoreCase(category, VALID_CATEGORIES[i])) return 1;
+    }
+    return 0;
+}
