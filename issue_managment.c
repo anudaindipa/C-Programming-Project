@@ -3,9 +3,13 @@
 
 <<<<<<< HEAD
    Data files (one record per line, fields separated by '|'):*/
-=======
-   Data files (one record per line, fields separated by '|'): */
->>>>>>> origin/issue_m
+
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+
+#define ISSUE_FILE  "issues.txt"
+#define ITEM_FILE   "items.txt"
+#define LOC_FILE    "locations.txt"
+#define STOCK_FILE  "stock.txt"
+#define MAX_RECORDS 1000
