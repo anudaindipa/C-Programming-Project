@@ -55,4 +55,35 @@ void issueItem(void) {
         printf("Invalid quantity.\n");
         return;
     }
+    clearInput();
+
+    n = loadStock(stock);
+    if (n < 0) {
+        printf("Cannot open stock.txt.\n");
+        return;
+    }
+    for (i = 0; i < n; i++) {
+        if (strcmp(stock[i].item, item) == 0 &&
+            strcmp(stock[i].location, location) == 0) {
+            index = i;
+            break;
+        }
+    }
+    if (index == -1) {
+        printf("No stock record for this item at this location.\n");
+        return;
+    }
+    if (stock[index].qty < qty) {
+        printf("Insufficient stock. Available: %d\n", stock[index].qty);
+        return;
+    }
+
+    printf("Issued to: ");
+    if (fgets(person, sizeof person, stdin) == NULL) return;
+    if (strchr(person, '\n') == NULL && !feof(stdin)) clearInput();
+    removeNewline(person);
+    if (person[0] == '\0' || strchr(person, '|') != NULL) {
+        printf("Invalid person/purpose.\n");
+        return;
+    }
 }
