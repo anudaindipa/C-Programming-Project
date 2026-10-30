@@ -178,3 +178,20 @@ static int readCode(const char prompt[], char code[]) {
     clearInput();
     return 1;
 }
+// findItem function
+static int findItem(const char code[], char itemName[]) {
+    FILE *f = fopen("items.txt", "r");
+    char line[220], id[10], name[60], category[25], unit[12];
+    double price;
+    if (f == NULL) return 0;
+    while (fgets(line, sizeof line, f)) {
+        if (sscanf(line, "%9[^|]|%59[^|]|%24[^|]|%11[^|]|%lf",
+                   id, name, category, unit, &price) == 5 && strcmp(id, code) == 0) {
+            strcpy(itemName, name);
+            fclose(f);
+            return 1;
+        }
+    }
+    fclose(f);
+    return 0;
+}
