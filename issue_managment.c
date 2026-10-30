@@ -30,3 +30,29 @@ void issueMenu(void) {
     } while (choice != 0);
 }
 
+void issueItem(void) {
+    char item[10], location[10], name[60], person[40], id[16], date[12];
+    Stock stock[MAX];
+    int n, i, index = -1, qty;
+    FILE *f;
+    time_t now;
+    struct tm *today;
+
+    printf("\n--- Issue Item ---\n");
+    if (!readCode("Item code: ", item)) return;
+    if (!findItem(item, name)) {
+        printf("Item not found.\n");
+        return;
+    }
+    if (!readCode("Location ID: ", location)) return;
+    if (!findLocation(location)) {
+        printf("Location not found.\n");
+        return;
+    }
+    printf("Quantity: ");
+    if (scanf("%d", &qty) != 1 || qty <= 0) {
+        clearInput();
+        printf("Invalid quantity.\n");
+        return;
+    }
+}
