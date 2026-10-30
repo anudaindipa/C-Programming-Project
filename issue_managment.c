@@ -223,3 +223,30 @@ static int loadStock(Stock stock[]) {
     fclose(f);
     return n;
 }
+// savestock
+static int saveStock(Stock stock[], int n) {
+    FILE *f = fopen("stock.txt", "w");
+    int i, ok = 1;
+    if (f == NULL) return 0;
+    for (i = 0; i < n; i++) {
+        if (fprintf(f, "%s|%s|%d\n", stock[i].item,
+                    stock[i].location, stock[i].qty) < 0) ok = 0;
+    }
+    if (fclose(f) != 0) ok = 0;
+    return ok;
+}
+
+// loadIssues 
+static int loadIssues(Issue issues[]) {
+    FILE *f = fopen("issues.txt", "r");
+    char line[200];
+    int n = 0;
+    if (f == NULL) return 0;
+    while (n < MAX && fgets(line, sizeof line, f)) {
+        if (sscanf(line, "%15[^|]|%9[^|]|%9[^|]|%d|%39[^|]|%11[^\n]",
+                   issues[n].id, issues[n].item, issues[n].location,
+                   &issues[n].qty, issues[n].person, issues[n].date) == 6) n++;
+    }
+    fclose(f);
+    return n;
+}
