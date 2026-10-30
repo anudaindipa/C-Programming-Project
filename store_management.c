@@ -7,6 +7,63 @@
 #define LOC_FILE "locations.txt"
 #define LOW_STOCK 5
 
+//main function stock management
+void stockMenu(void)
+{
+    int choice;
+
+    do
+    {
+        printf("\n===== STOCK MANAGEMENT =====\n");
+
+        printf("1. Add / Increase Stock\n");
+        printf("2. Display All Stock\n");
+        printf("3. Display Stock by Location\n");
+        printf("4. Low Stock Report\n");
+        printf("0. Back to Main Menu\n");
+
+        printf("Enter your choice: ");
+
+        if (scanf("%d", &choice) != 1)
+        {
+            printf("Invalid input!\n");
+
+            int ch;
+            while ((ch = getchar()) != '\n' && ch != EOF);
+
+            choice = -1;
+            continue;
+        }
+
+        switch (choice)
+        {
+            case 1:
+                addStock();
+                break;
+
+            case 2:
+                displayStock();
+                break;
+
+            case 3:
+                displayStockByLocation();
+                break;
+
+            case 4:
+                checkLowStock();
+                break;
+
+            case 0:
+                printf("Returning to main menu...\n");
+                break;
+
+            default:
+                printf("Invalid choice!\n");
+        }
+
+    } while (choice != 0);
+}
+
 // Structure for stock information
 typedef struct
 {
@@ -128,5 +185,5 @@ void saveStock(StockEntry stock[], int count)
     }
 
     fclose(fp);
-}
+} 
 
