@@ -359,3 +359,46 @@ static void getTodayDate(char *buffer, int size) {
         strcpy(buffer, "0000-00-00");
     }
 }
+static int getItemInfo(const char code[], char nameOut[],
+                       int nameOutSize, double *priceOut) {
+    FILE *fp = fopen(ITEM_FILE, "r");
+    char lineCode[10], lineName[60], category[25], unit[12];
+    double price;
+    int found = 0;
+
+    if (fp == NULL) return 0;
+
+    while (fscanf(fp, " %9[^|]|%59[^|]|%24[^|]|%11[^|]|%lf",
+                  lineCode, lineName, category, unit, &price) == 5) {
+        if (strcmp(lineCode, code) == 0) {
+            if (nameOut != NULL && nameOutSize > 0) {
+                strncpy(nameOut, lineName, (size_t)nameOutSize - 1);
+                nameOut[nameOutSize - 1] = '\0';
+            }
+            if (priceOut != NULL) *priceOut = price;
+            found = 1;
+            break;
+        }
+    }
+    fclose(fp);
+    return found;
+
+}
+
+static int locationExists(const char locID[]) {
+    FILE *fp = fopen(LOC_FILE, "r");
+    char id[10], name[60], deptCode[10], type[15];
+    int found = 0;
+
+    if (fp == NULL) return 0;
+
+    while (fscanf(fp, " %9[^|]|%59[^|]|%9[^|]|%14[^\r\n]",
+                  id, name, deptCode, type) == 4) {
+        if (strcmp(id, locID) == 0) {
+            found = 1;
+            break;
+        }
+    }
+    fclose(fp);
+    return found;
+}
