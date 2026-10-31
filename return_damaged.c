@@ -92,16 +92,32 @@ void processReturn(void) {
     printf("\n----- Process a Returned Item (restock) -----\n");
 
     printf("Enter item code being returned: ");
-    scanf("%9s", itemCode);
+    if (scanf("%9s", itemCode) != 1) {          
+        flushInputLine();
+        printf("Invalid input.\n");
+        return;
+    }
     flushInputLine();
+    if (!validateTextField(itemCode)) {          
+        printf("Invalid item code.\n");
+        return;
+    }
     if (!getItemInfo(itemCode, NULL, 0, NULL)) {
         printf("Item \"%s\" does not exist.\n", itemCode);
         return;
     }
 
     printf("Enter location ID the item is being returned to: ");
-    scanf("%9s", locID);
+    if (scanf("%9s", locID) != 1) {              
+        flushInputLine();
+        printf("Invalid input.\n");
+        return;
+    }
     flushInputLine();
+    if (!validateTextField(locID)) {             
+        printf("Invalid location ID.\n");
+        return;
+    }
     if (!locationExists(locID)) {
         printf("Location \"%s\" does not exist.\n", locID);
         return;
@@ -115,10 +131,8 @@ void processReturn(void) {
     }
     flushInputLine();
 
-    printf("Reason / condition note: ");
-    fgets(reason, sizeof(reason), stdin);
-    trimNewline(reason);
-    if (!validateTextField(reason)) {
+    if (!readTextField("Reason / condition note: ",   
+                       reason, (int)sizeof(reason))) {
         printf("Invalid entry.\n");
         return;
     }
@@ -138,7 +152,10 @@ void processReturn(void) {
         n++;
         idx = n - 1;
     }
-    saveStock(stock, n);
+    if (!saveStock(stock, n)) {                   
+        printf("Error: could not update stock. Return not recorded.\n");
+        return;
+    }
 
     generateRecordID(recID);
     getTodayDate(today, (int)sizeof(today));
@@ -155,6 +172,7 @@ void processReturn(void) {
     printf("Return recorded (%s). Stock of %s at %s is now %d unit(s).\n",
            recID, itemCode, locID, stock[idx].quantity);
 }
+
 
 void reportDamage(void) {
     char itemCode[10], locID[10], reason[50], recID[16], today[12];
