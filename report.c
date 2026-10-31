@@ -56,3 +56,15 @@ typedef struct {
     char reason[50];
     char date[12];
 } ReturnRecord;
+
+static void flushInputLine(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) {
+        /* discard */
+    }
+}
+
+static void pauseScreen(void) {
+    printf("\nPress ENTER to continue...");
+    flushInputLine();
+}
