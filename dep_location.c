@@ -377,6 +377,8 @@ void departmentMenu(void) {
         printf("2. Display Departments\n");
         printf("3. Search Department\n");
         printf("4. Update Department\n");
+        printf("5. Add Location\n");
+        printf("6. Display Locations\n");
         printf("0. Back to Main Menu\n");
         printf("Enter choice: ");
 
@@ -404,6 +406,12 @@ void departmentMenu(void) {
                 break;
             case 4:
                 updateDepartment();
+                break;
+            case 5: 
+                addLocation();
+                break;
+            case 6:
+                displayLocations();
                 break;
             case 0:
                 printf("Returning to main menu.\n");
