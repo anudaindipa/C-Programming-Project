@@ -295,9 +295,7 @@ void displayMostIssuedItems(void) {
         }
     }
 
-    /* Sorts items by issued quantity and displays the results.*/
-
-
+  /* /* Calculates and displays the total loss from damaged items. */*/
     for (i = 0; i < uniqueCount - 1; i++) {
         for (j = 0; j < uniqueCount - 1 - i; j++) {
             if (totals[j] < totals[j + 1]) {
@@ -329,3 +327,4 @@ void displayMostIssuedItems(void) {
         printf("%-8s %-28s %14d\n", codes[i], name, totals[i]);
     }
 }
+   
