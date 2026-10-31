@@ -343,6 +343,32 @@ static void addLocation(void) {
 }
 
 
+/* Display every saved location. */
+static void displayLocations(void) {
+    Location locations[MAX_RECORDS];
+    int count, i;
+
+    count = loadLocations(locations);
+
+    printf("\n--- Location List ---\n");
+
+    if (count == 0) {
+        printf("No locations found.\n");
+        return;
+    }
+
+    printf("%-8s %-25s %-10s %-10s\n",
+           "ID", "NAME", "DEPT", "TYPE");
+
+    for (i = 0; i < count; i++) {
+        printf("%-8s %-25s %-10s %-10s\n",
+               locations[i].id,
+               locations[i].name,
+               locations[i].deptCode,
+               locations[i].type);
+    }
+}
+
 void departmentMenu(void) {
     int choice;
     do {
