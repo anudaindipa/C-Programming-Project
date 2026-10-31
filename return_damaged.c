@@ -494,7 +494,7 @@ static int loadStock(StockEntry stock[], int maxRecords) {
     return count;
 }
 
-static void saveStock(StockEntry stock[], int n) {
+static int saveStock(StockEntry stock[], int n) {
     FILE *fp = fopen(STOCK_FILE, "w");
     int i;
 
