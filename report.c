@@ -206,3 +206,64 @@ void generateInventorySummary(void) {
     printf("Total value of current stock (Rs.)     : %.2f\n", totalValue);
     printf("=====================================================\n");
 }
+/* For each department: add up the stock of all its locations. */
+void displayDepartmentWiseStock(void) {
+    Department depts[MAX_RECORDS];
+    Location locs[MAX_RECORDS];
+    Item items[MAX_RECORDS];
+    StockEntry stock[MAX_RECORDS];
+    int dCount = loadDepartments(depts, MAX_RECORDS);
+    int lCount = loadLocations(locs, MAX_RECORDS);
+    int iCount = loadItems(items, MAX_RECORDS);
+    int sCount = loadStock(stock, MAX_RECORDS);
+    int d, s;
+
+    printf("\n----- Department-wise Stock Summary -----\n");
+    printf("%-10s %-30s %10s %14s\n",
+           "DEPT", "NAME", "UNITS", "VALUE (Rs.)");
+    printf("--------------------------------------------------------------------\n");
+
+    for (d = 0; d < dCount; d++) {
+        int units = 0;
+        double value = 0.0;
+
+        for (s = 0; s < sCount; s++) {
+            char deptCode[10];
+            if (findDeptOfLocation(locs, lCount, stock[s].locID, deptCode) &&
+                strcmp(deptCode, depts[d].code) == 0) {
+                int idx = findItemIndex(items, iCount, stock[s].itemCode);
+                units += stock[s].quantity;
+                if (idx != -1) {
+                    value += items[idx].price * stock[s].quantity;
+                }
+            }
+        }
+        printf("%-10s %-30s %10d %14.2f\n",
+               depts[d].code, depts[d].name, units, value);
+    }
+}
+
+void displayLowStockReport(void) {
+    Item items[MAX_RECORDS];
+    StockEntry stock[MAX_RECORDS];
+    int iCount = loadItems(items, MAX_RECORDS);
+    int sCount = loadStock(stock, MAX_RECORDS);
+    int i, anyLow = 0;
+
+    printf("\n----- Low Stock Report (threshold = %d) -----\n",
+           LOW_STOCK_THRESHOLD);
+    printf("%-8s %-24s %-8s %10s\n", "ITEM", "NAME", "LOC", "QTY");
+    printf("----------------------------------------------------------\n");
+    for (i = 0; i < sCount; i++) {
+        if (stock[i].quantity <= LOW_STOCK_THRESHOLD) {
+            int idx = findItemIndex(items, iCount, stock[i].itemCode);
+            const char *name;
+            if (idx != -1) name = items[idx].name;
+            else name = "(unknown item)";
+            printf("%-8s %-24s %-8s %10d\n",
+                   stock[i].itemCode, name, stock[i].locID, stock[i].quantity);
+            anyLow = 1;
+        }
+    }
+    if (!anyLow) printf("No low-stock items found.\n");
+}
