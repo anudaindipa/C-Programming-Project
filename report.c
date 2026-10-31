@@ -176,3 +176,33 @@ static int findDeptOfLocation(Location locs[], int n,
         }
     }
     return 0;
+
+    /* Counts all records and works out the value of the stock */
+void generateInventorySummary(void) {
+    Department depts[MAX_RECORDS];
+    Location locs[MAX_RECORDS];
+    Item items[MAX_RECORDS];
+    StockEntry stock[MAX_RECORDS];
+    int dCount = loadDepartments(depts, MAX_RECORDS);
+    int lCount = loadLocations(locs, MAX_RECORDS);
+    int iCount = loadItems(items, MAX_RECORDS);
+    int sCount = loadStock(stock, MAX_RECORDS);
+    int i, totalUnits = 0;
+    double totalValue = 0.0;
+
+    for (i = 0; i < sCount; i++) {
+        int idx = findItemIndex(items, iCount, stock[i].itemCode);
+        totalUnits += stock[i].quantity;
+        if (idx != -1) {
+            totalValue += items[idx].price * stock[i].quantity;
+        }
+    }
+
+    printf("\n================ INVENTORY SUMMARY ================\n");
+    printf("Departments / Common Areas registered : %d\n", dCount);
+    printf("Locations registered                  : %d\n", lCount);
+    printf("Distinct items in catalogue            : %d\n", iCount);
+    printf("Total units currently in stock         : %d\n", totalUnits);
+    printf("Total value of current stock (Rs.)     : %.2f\n", totalValue);
+    printf("=====================================================\n");
+}
