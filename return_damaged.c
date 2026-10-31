@@ -26,6 +26,29 @@ typedef struct {
     int quantity;
 } StockEntry;
 
+void returnMenu(void);
+void processReturn(void);
+void reportDamage(void);
+void displayReturns(void);
+void sortAndDisplayDamageReports(void);
+void calculateDamageLossValue(void);
+
+static void flushInputLine(void);
+static int  readTextField(const char *prompt, char *buffer, int size);
+static int  loadReturns(ReturnRecord rec[], int maxRecords);
+static void trimNewline(char s[]);
+static void pauseScreen(void);
+static void generateRecordID(char *buffer);
+static int  validateTextField(const char text[]);
+static void getTodayDate(char *buffer, int size);
+static int  getItemInfo(const char code[], char nameOut[],
+                        int nameOutSize, double *priceOut);
+static int  locationExists(const char locID[]);
+static int  loadStock(StockEntry stock[], int maxRecords);
+static int  saveStock(StockEntry stock[], int n);
+static int  findStockIndex(StockEntry stock[], int n,
+                           const char itemCode[], const char locID[]);
+
 void returnMenu(void) {
     int choice;
     int running = 1;
