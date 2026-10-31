@@ -267,3 +267,30 @@ void displayLowStockReport(void) {
     }
     if (!anyLow) printf("No low-stock items found.\n");
 }
+
+/* Calculates total issued quantity for each item. */
+void displayMostIssuedItems(void) {
+    Item items[MAX_RECORDS];
+    IssueRecord issues[MAX_RECORDS];
+    char codes[MAX_RECORDS][10];
+    int totals[MAX_RECORDS];
+    int uniqueCount = 0;
+    int iCount = loadItems(items, MAX_RECORDS);
+    int isCount = loadIssues(issues, MAX_RECORDS);
+    int i, j;
+
+    for (i = 0; i < isCount; i++) {
+        int found = 0;
+        for (j = 0; j < uniqueCount; j++) {
+            if (strcmp(codes[j], issues[i].itemCode) == 0) {
+                totals[j] += issues[i].quantity;
+                found = 1;
+                break;
+            }
+        }
+        if (!found && uniqueCount < MAX_RECORDS) {
+            strcpy(codes[uniqueCount], issues[i].itemCode);
+            totals[uniqueCount] = issues[i].quantity;
+            uniqueCount++;
+        }
+    }
