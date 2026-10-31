@@ -327,4 +327,41 @@ void displayMostIssuedItems(void) {
         printf("%-8s %-28s %14d\n", codes[i], name, totals[i]);
     }
 }
+
+/* Money lost = damaged quantity x unit price. */
+void displayDamageLossReport(void) {
+    Item items[MAX_RECORDS];
+    ReturnRecord rec[MAX_RECORDS];
+    int iCount = loadItems(items, MAX_RECORDS);
+    int rCount = loadReturns(rec, MAX_RECORDS);
+    int i, anyDamage = 0;
+    double totalLoss = 0.0;
+
+    printf("\n----- Damage Loss Report -----\n");
+    printf("%-8s %-24s %5s %12s %12s\n",
+           "ITEM", "NAME", "QTY", "PRICE", "LOSS (Rs.)");
+    printf("--------------------------------------------------------------------\n");
+
+    for (i = 0; i < rCount; i++) {
+        if (strcmp(rec[i].type, "DAMAGE") == 0) {
+            int idx = findItemIndex(items, iCount, rec[i].itemCode);
+            if (idx != -1) {
+                double loss = items[idx].price * rec[i].quantity;
+                printf("%-8s %-24s %5d %12.2f %12.2f\n",
+                       rec[i].itemCode, items[idx].name,
+                       rec[i].quantity, items[idx].price, loss);
+                totalLoss += loss;
+                anyDamage = 1;
+            }
+        }
+    }
+
+    if (!anyDamage) {
+        printf("No damage has been reported yet.\n");
+        return;
+    }
+    printf("--------------------------------------------------------------------\n");
+    printf("TOTAL DAMAGE LOSS: Rs. %.2f\n", totalLoss);
+}
+
    
