@@ -155,3 +155,24 @@ static int loadReturns(ReturnRecord r[], int max) {
     fclose(fp);
     return n;
 }
+
+/* find item and department */
+static int findItemIndex(Item items[], int n, const char code[]) {
+    int i;
+    for (i = 0; i < n; i++) {
+        if (strcmp(items[i].code, code) == 0) return i;
+    }
+    return -1;
+}
+
+
+static int findDeptOfLocation(Location locs[], int n,
+                              const char locID[], char deptCodeOut[]) {
+    int i;
+    for (i = 0; i < n; i++) {
+        if (strcmp(locs[i].id, locID) == 0) {
+            strcpy(deptCodeOut, locs[i].deptCode);
+            return 1;
+        }
+    }
+    return 0;
