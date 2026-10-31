@@ -369,18 +369,50 @@ static void displayLocations(void) {
     }
 }
 
+/* Search departments by code or by part of the name. */
+static void searchDepartment(void) {
+    Department departments[MAX_RECORDS];
+    char keyword[60];
+    int count, i, found = 0;
+
+    count = loadDepartments(departments);
+
+    printf("Enter code or name to search: ");
+    fgets(keyword, sizeof(keyword), stdin);
+    removeNewline(keyword);
+
+    for (i = 0; i < count; i++) {
+        if (strstr(departments[i].code, keyword) != NULL ||
+            strstr(departments[i].name, keyword) != NULL) {
+            printf("%s | %s | %s\n",
+                   departments[i].code,
+                   departments[i].name,
+                   departments[i].type);
+            found = 1;
+        }
+    }
+
+    if (found == 0) {
+        printf("No matching department found.\n");
+    }
+}
+
+
 void departmentMenu(void) {
     int choice;
     do {
-        printf("\n===== Department Management =====\n");
+       printf("\n===== Department and Location Management =====\n");
         printf("1. Add Department / Common Area\n");
         printf("2. Display Departments\n");
         printf("3. Search Department\n");
         printf("4. Update Department\n");
-        printf("5. Add Location\n");
-        printf("6. Display Locations\n");
+        printf("5. Delete Department\n");
+        printf("6. Add Location\n");
+        printf("7. Display Locations\n");
+        printf("8. Display Locations by Department\n");
         printf("0. Back to Main Menu\n");
         printf("Enter choice: ");
+
 
         if (scanf("%d", &choice) != 1) {
             if (feof(stdin)) {
@@ -395,29 +427,16 @@ void departmentMenu(void) {
         clearInputBuffer();
 
         switch (choice) {
-            case 1:
-                addDepartment();
-                break;
-            case 2:
-                displayDepartments();
-                break;
-            case 3:
-                searchDepartment();
-                break;
-            case 4:
-                updateDepartment();
-                break;
-            case 5: 
-                addLocation();
-                break;
-            case 6:
-                displayLocations();
-                break;
-            case 0:
-                printf("Returning to main menu.\n");
-                break;
-            default:
-                printf("Invalid choice.\n");
+            case 1: addDepartment(); break;
+            case 2: displayDepartments(); break;
+            case 3: searchDepartment(); break;
+            case 4: updateDepartment(); break;
+            case 5: deleteDepartment(); break;
+            case 6: addLocation(); break;
+            case 7: displayLocations(); break;
+            case 8: displayLocationsByDepartment(); break;
+            case 0: printf("Returning to main menu.\n"); break;
+            default: printf("Invalid choice.\n");
         }
     } while (choice != 0);
 }
