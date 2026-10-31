@@ -294,3 +294,38 @@ void displayMostIssuedItems(void) {
             uniqueCount++;
         }
     }
+
+    /* Sorts items by issued quantity and displays the results.*/
+
+
+    for (i = 0; i < uniqueCount - 1; i++) {
+        for (j = 0; j < uniqueCount - 1 - i; j++) {
+            if (totals[j] < totals[j + 1]) {
+                int tempTotal = totals[j];
+                char tempCode[10];
+
+                totals[j] = totals[j + 1];
+                totals[j + 1] = tempTotal;
+
+                strcpy(tempCode, codes[j]);
+                strcpy(codes[j], codes[j + 1]);
+                strcpy(codes[j + 1], tempCode);
+            }
+        }
+    }
+
+    printf("\n----- Most Issued Items (highest demand first) -----\n");
+    if (uniqueCount == 0) {
+        printf("No items have been issued yet.\n");
+        return;
+    }
+    printf("%-8s %-28s %14s\n", "ITEM", "NAME", "TOTAL ISSUED");
+    printf("----------------------------------------------------------\n");
+    for (i = 0; i < uniqueCount; i++) {
+        int idx = findItemIndex(items, iCount, codes[i]);
+        const char *name;
+        if (idx != -1) name = items[idx].name;
+        else name = "(unknown item)";
+        printf("%-8s %-28s %14d\n", codes[i], name, totals[i]);
+    }
+}
