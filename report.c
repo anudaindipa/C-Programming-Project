@@ -364,4 +364,31 @@ void displayDamageLossReport(void) {
     printf("TOTAL DAMAGE LOSS: Rs. %.2f\n", totalLoss);
 }
 
+/* Percentage of locations that currently hold at least one item. */
+void displayStockCoverage(void) {
+    Location locs[MAX_RECORDS];
+    StockEntry stock[MAX_RECORDS];
+    int lCount = loadLocations(locs, MAX_RECORDS);
+    int sCount = loadStock(stock, MAX_RECORDS);
+    int i, j, coveredCount = 0;
+
+    for (i = 0; i < lCount; i++) {
+        for (j = 0; j < sCount; j++) {
+            if (strcmp(stock[j].locID, locs[i].id) == 0 &&
+                stock[j].quantity > 0) {
+                coveredCount++;
+                break;
+            }
+        }
+    }
+
+    printf("\n----- Location Stock Coverage -----\n");
+    if (lCount == 0) {
+        printf("No locations registered yet.\n");
+        return;
+    }
+    printf("%d of %d locations (%.1f%%) currently hold at least one item in stock.\n",
+           coveredCount, lCount,
+           (double)coveredCount * 100.0 / (double)lCount);
+}
    
