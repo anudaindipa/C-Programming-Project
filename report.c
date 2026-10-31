@@ -68,3 +68,90 @@ static void pauseScreen(void) {
     printf("\nPress ENTER to continue...");
     flushInputLine();
 }
+/* Load data into arrays and return the record count. */
+static int loadDepartments(Department d[], int max) {
+    FILE *fp = fopen(DEPT_FILE, "r");
+    int n = 0;
+
+    if (fp == NULL) return 0;
+    while (n < max &&
+           fscanf(fp, " %9[^|]|%59[^|]|%11[^\r\n]",
+                  d[n].code, d[n].name, d[n].type) == 3) {
+        n++;
+    }
+    fclose(fp);
+    return n;
+}
+
+static int loadLocations(Location l[], int max) {
+    FILE *fp = fopen(LOC_FILE, "r");
+    int n = 0;
+
+    if (fp == NULL) return 0;
+    while (n < max &&
+           fscanf(fp, " %9[^|]|%59[^|]|%9[^|]|%14[^\r\n]",
+                  l[n].id, l[n].name, l[n].deptCode, l[n].type) == 4) {
+        n++;
+    }
+    fclose(fp);
+    return n;
+}
+
+static int loadItems(Item it[], int max) {
+    FILE *fp = fopen(ITEM_FILE, "r");
+    int n = 0;
+
+    if (fp == NULL) return 0;
+    while (n < max &&
+           fscanf(fp, " %9[^|]|%59[^|]|%24[^|]|%11[^|]|%lf",
+                  it[n].code, it[n].name, it[n].category,
+                  it[n].unit, &it[n].price) == 5) {
+        n++;
+    }
+    fclose(fp);
+    return n;
+}
+
+static int loadStock(StockEntry s[], int max) {
+    FILE *fp = fopen(STOCK_FILE, "r");
+    int n = 0;
+
+    if (fp == NULL) return 0;
+    while (n < max &&
+           fscanf(fp, " %9[^|]|%9[^|]|%d",
+                  s[n].itemCode, s[n].locID, &s[n].quantity) == 3) {
+        n++;
+    }
+    fclose(fp);
+    return n;
+}
+
+static int loadIssues(IssueRecord is[], int max) {
+    FILE *fp = fopen(ISSUE_FILE, "r");
+    int n = 0;
+
+    if (fp == NULL) return 0;
+    while (n < max &&
+           fscanf(fp, " %15[^|]|%9[^|]|%9[^|]|%d|%39[^|]|%11[^\r\n]",
+                  is[n].issueID, is[n].itemCode, is[n].locID,
+                  &is[n].quantity, is[n].issuedTo, is[n].date) == 6) {
+        n++;
+    }
+    fclose(fp);
+    return n;
+}
+
+static int loadReturns(ReturnRecord r[], int max) {
+    FILE *fp = fopen(RETURN_FILE, "r");
+    int n = 0;
+
+    if (fp == NULL) return 0;
+    while (n < max &&
+           fscanf(fp, " %15[^|]|%9[^|]|%9[^|]|%d|%7[^|]|%49[^|]|%11[^\r\n]",
+                  r[n].recordID, r[n].itemCode, r[n].locID,
+                  &r[n].quantity, r[n].type, r[n].reason, r[n].date) == 7) {
+        n++;
+    }
+    fclose(fp);
+    return n;
+}
