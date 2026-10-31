@@ -183,16 +183,32 @@ void reportDamage(void) {
     printf("\n----- Report Damaged / Unusable Item -----\n");
 
     printf("Enter item code: ");
-    scanf("%9s", itemCode);
+    if (scanf("%9s", itemCode) != 1) {           
+        flushInputLine();
+        printf("Invalid input.\n");
+        return;
+    }
     flushInputLine();
+    if (!validateTextField(itemCode)) {          
+        printf("Invalid item code.\n");
+        return;
+    }
     if (!getItemInfo(itemCode, NULL, 0, NULL)) {
         printf("Item \"%s\" does not exist.\n", itemCode);
         return;
     }
 
     printf("Enter location ID where the damage occurred: ");
-    scanf("%9s", locID);
+    if (scanf("%9s", locID) != 1) {               
+        flushInputLine();
+        printf("Invalid input.\n");
+        return;
+    }
     flushInputLine();
+    if (!validateTextField(locID)) {              
+        printf("Invalid location ID.\n");
+        return;
+    }
     if (!locationExists(locID)) {
         printf("Location \"%s\" does not exist.\n", locID);
         return;
@@ -215,16 +231,17 @@ void reportDamage(void) {
         return;
     }
 
-    printf("Reason (e.g. Screen cracked / Water damage): ");
-    fgets(reason, sizeof(reason), stdin);
-    trimNewline(reason);
-    if (!validateTextField(reason)) {
+    if (!readTextField("Reason (e.g. Screen cracked / Water damage): ",
+                       reason, (int)sizeof(reason))) {
         printf("Invalid entry.\n");
         return;
     }
 
     stock[idx].quantity -= qty;
-    saveStock(stock, n);
+    if (!saveStock(stock, n)) {                   
+        printf("Error: could not update stock. Damage not recorded.\n");
+        return;
+    }
 
     generateRecordID(recID);
     getTodayDate(today, (int)sizeof(today));
@@ -252,11 +269,11 @@ void displayReturns(void) {
         return;
     }
 
-    printf("%-7s %-8s %-8s %5s %-7s %-20s %-10s\n",
+    printf("%-7s %-10s %-10s %5s %-7s %-30s %-10s\n",
            "ID", "ITEM", "LOC", "QTY", "TYPE", "REASON", "DATE");
     printf("--------------------------------------------------------------------------\n");
     for (i = 0; i < n; i++) {
-        printf("%-7s %-8s %-8s %5d %-7s %-20s %-10s\n",
+       printf("%-7s %-10s %-10s %5d %-7s %-30s %-10s\n",
                rec[i].recordID, rec[i].itemCode, rec[i].locID,
                rec[i].quantity, rec[i].type, rec[i].reason, rec[i].date);
     }
@@ -292,7 +309,7 @@ void sortAndDisplayDamageReports(void) {
         return;
     }
 
-    printf("%-7s %-8s %-8s %5s %-20s %-10s\n",
+    printf("%-7s %-10s %-10s %5s %-30s %-10s\n",
            "ID", "ITEM", "LOC", "QTY", "REASON", "DATE");
     printf("--------------------------------------------------------------------\n");
     for (i = 0; i < dCount; i++) {
@@ -343,6 +360,21 @@ static void flushInputLine(void) {
     }
 }
 
+static int readTextField(const char *prompt, char *buffer, int size) {
+    printf("%s", prompt);
+    if (fgets(buffer, size, stdin) == NULL) return 0;
+
+    /* If the newline was NOT read, the user typed more than fits. */
+    if (strchr(buffer, '\n') == NULL && !feof(stdin)) {
+        flushInputLine();          /* discard the rest of the line */
+        printf("Text is too long (maximum %d characters).\n", size - 1);
+        return 0;
+    }
+
+    trimNewline(buffer);
+    return validateTextField(buffer);
+}
+
 static int loadReturns(ReturnRecord rec[], int maxRecords) {
     FILE *fp = fopen(RETURN_FILE, "r");
     int count = 0;
@@ -379,7 +411,7 @@ static void pauseScreen(void) {
 static void generateRecordID(char *buffer) {
     ReturnRecord rec[MAX_RECORDS];
     int n = loadReturns(rec, MAX_RECORDS);
-    sprintf(buffer, "RD%04d", n + 1);
+     snprintf(buffer, 16, "RD%04d", n + 1);
 }
 
 static int validateTextField(const char text[]) {
@@ -394,11 +426,11 @@ static void getTodayDate(char *buffer, int size) {
 
     now = time(NULL);
     t = localtime(&now);
-    if (t != NULL) {
-        strftime(buffer, (size_t)size, "%Y-%m-%d", t);
-    } else {
-        strcpy(buffer, "0000-00-00");
+    if (t != NULL && strftime(buffer, (size_t)size, "%Y-%m-%d", t) > 0) {
+        return;
     }
+    strncpy(buffer, "0000-00-00", (size_t)size - 1);
+    buffer[size - 1] = '\0';
 }
 static int getItemInfo(const char code[], char nameOut[],
                        int nameOutSize, double *priceOut) {
@@ -475,6 +507,7 @@ static void saveStock(StockEntry stock[], int n) {
                 stock[i].itemCode, stock[i].locID, stock[i].quantity);
     }
     fclose(fp);
+    return 1;
 }
 
 static int findStockIndex(StockEntry stock[], int n,
