@@ -500,7 +500,7 @@ static int saveStock(StockEntry stock[], int n) {
 
     if (fp == NULL) {
         printf("Error: could not update stock file.\n");
-        return;
+        return 0;
     }
     for (i = 0; i < n; i++) {
         fprintf(fp, "%s|%s|%d\n",
