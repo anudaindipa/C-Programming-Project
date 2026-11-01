@@ -18,6 +18,30 @@ typedef struct {
     char type[15];
 } Location;
 
+/* Remove the ENTER key left in the input buffer. */
+static void clearInputBuffer(void) {
+    int ch;
+
+    while ((ch = getchar()) != '\n' && ch != EOF) {
+        /* Nothing to do here. */
+    }
+}
+
+/* Remove the newline at the end of a string. */
+static void removeNewline(char text[]) {
+    text[strcspn(text, "\r\n")] = '\0';
+}
+
+/* Change lowercase letters into uppercase letters. */
+static void makeUppercase(char text[]) {
+    int i;
+
+    for (i = 0; text[i] != '\0'; i++) {
+        if (text[i] >= 'a' && text[i] <= 'z') {
+            text[i] = text[i] - 32;
+        }
+    }
+}
 
 
 //Load department records from departments.txt into an array.
