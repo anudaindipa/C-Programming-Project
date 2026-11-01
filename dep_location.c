@@ -386,6 +386,56 @@ static int countLocationsInDepartment(char code[]) {
     return total;
 }
 
+/* Delete a department only if it has no locations. */
+static void deleteDepartment(void) {
+    Department departments[MAX_RECORDS];
+    char code[10];
+    FILE *fp;
+    int count, i, found = -1;
+
+    count = loadDepartments(departments);
+
+    printf("Enter department code to delete: ");
+    scanf("%9s", code);
+    clearInputBuffer();
+    makeUppercase(code);
+
+    for (i = 0; i < count; i++) {
+        if (strcmp(departments[i].code, code) == 0) {
+            found = i;
+        }
+    }
+
+    if (found == -1) {
+        printf("Department not found.\n");
+        return;
+    }
+
+    if (countLocationsInDepartment(code) > 0) {
+        printf("This department still has locations.\n");
+        printf("Delete or move those locations first.\n");
+        return;
+    }
+
+    fp = fopen(DEPT_FILE, "w");
+
+    if (fp == NULL) {
+        printf("Cannot save department data.\n");
+        return;
+    }
+
+    for (i = 0; i < count; i++) {
+        if (i != found) {
+            fprintf(fp, "%s|%s|%s\n",
+                    departments[i].code,
+                    departments[i].name,
+                    departments[i].type);
+        }
+    }
+
+    fclose(fp);
+    printf("Department deleted successfully.\n");
+}
 
 void departmentMenu(void) {
     int choice;
