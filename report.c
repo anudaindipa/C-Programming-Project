@@ -364,7 +364,7 @@ void displayDamageLossReport(void) {
     printf("TOTAL DAMAGE LOSS: Rs. %.2f\n", totalLoss);
 }
 
-/* Percentage of locations that currently hold at least one item. */
+/* /* Export summary report to file */ */
 void displayStockCoverage(void) {
     Location locs[MAX_RECORDS];
     StockEntry stock[MAX_RECORDS];
@@ -391,4 +391,92 @@ void displayStockCoverage(void) {
            coveredCount, lCount,
            (double)coveredCount * 100.0 / (double)lCount);
 }
+/* Writes the same numbers as option 1 (plus the damage loss) to a file. */
+void exportSummaryToFile(void) {
+    Department depts[MAX_RECORDS];
+    Location locs[MAX_RECORDS];
+    Item items[MAX_RECORDS];
+    StockEntry stock[MAX_RECORDS];
+    ReturnRecord rec[MAX_RECORDS];
+    int dCount = loadDepartments(depts, MAX_RECORDS);
+    int lCount = loadLocations(locs, MAX_RECORDS);
+    int iCount = loadItems(items, MAX_RECORDS);
+    int sCount = loadStock(stock, MAX_RECORDS);
+    int rCount = loadReturns(rec, MAX_RECORDS);
+    int i, totalUnits = 0;
+    double totalValue = 0.0, totalLoss = 0.0;
+    FILE *fp;
+
+    for (i = 0; i < sCount; i++) {
+        int idx = findItemIndex(items, iCount, stock[i].itemCode);
+        totalUnits += stock[i].quantity;
+        if (idx != -1) totalValue += items[idx].price * stock[i].quantity;
+    }
+    for (i = 0; i < rCount; i++) {
+        if (strcmp(rec[i].type, "DAMAGE") == 0) {
+            int idx = findItemIndex(items, iCount, rec[i].itemCode);
+            if (idx != -1) totalLoss += items[idx].price * rec[i].quantity;
+        }
+    }
+
+    fp = fopen(SUMMARY_FILE, "w");
+    if (fp == NULL) {
+        printf("Error: could not write %s\n", SUMMARY_FILE);
+        return;
+    }
+    fprintf(fp, "FACULTY OF TECHNOLOGY - INVENTORY MANAGEMENT SYSTEM\n");
+    fprintf(fp, "SUMMARY REPORT\n");
+    fprintf(fp, "=====================================================\n");
+    fprintf(fp, "Departments / Common Areas registered : %d\n", dCount);
+    fprintf(fp, "Locations registered                  : %d\n", lCount);
+    fprintf(fp, "Distinct items in catalogue            : %d\n", iCount);
+    fprintf(fp, "Total units currently in stock         : %d\n", totalUnits);
+    fprintf(fp, "Total value of current stock (Rs.)     : %.2f\n", totalValue);
+    fprintf(fp, "Total estimated damage loss (Rs.)      : %.2f\n", totalLoss);
+    fprintf(fp, "=====================================================\n");
+    fclose(fp);
+
+    printf("Summary report written to \"%s\".\n", SUMMARY_FILE);
+}
+
+/* ============================ menu ============================ */
+
+void reportMenu(void) {
+    int choice;
+    int running = 1;
+
+    while (running) {
+        printf("\n----- Reports & Statistics -----\n");
+        printf("1. Overall Inventory Summary\n");
+        printf("2. Department-wise Stock Summary\n");
+        printf("3. Low Stock Report\n");
+        printf("4. Most Issued Items\n");
+        printf("5. Damage Loss Report\n");
+        printf("6. Location Stock Coverage\n");
+        printf("7. Export Summary Report to File\n");
+        printf("0. Back to Main Menu\n");
+        printf("Enter your choice: ");
+
+        if (scanf("%d", &choice) != 1) {
+            if (feof(stdin)) { running = 0; break; }  /* no more input */
+            printf("Invalid input.\n");
+            flushInputLine();
+            continue;
+        }
+        flushInputLine();
+
+        switch (choice) {
+            case 1: generateInventorySummary();    pauseScreen(); break;
+            case 2: displayDepartmentWiseStock();  pauseScreen(); break;
+            case 3: displayLowStockReport();       pauseScreen(); break;
+            case 4: displayMostIssuedItems();      pauseScreen(); break;
+            case 5: displayDamageLossReport();     pauseScreen(); break;
+            case 6: displayStockCoverage();        pauseScreen(); break;
+            case 7: exportSummaryToFile();         pauseScreen(); break;
+            case 0: running = 0; break;
+            default: printf("Invalid choice.\n");
+        }
+    }
+}
+
    
