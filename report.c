@@ -176,6 +176,7 @@ static int findDeptOfLocation(Location locs[], int n,
         }
     }
     return 0;
+}
 
     /* Counts all records and works out the value of the stock */
 void generateInventorySummary(void) {
@@ -295,7 +296,7 @@ void displayMostIssuedItems(void) {
         }
     }
 
-  /* /* Calculates and displays the total loss from damaged items. */*/
+  /*  Calculates and displays the total loss from damaged items. */
     for (i = 0; i < uniqueCount - 1; i++) {
         for (j = 0; j < uniqueCount - 1 - i; j++) {
             if (totals[j] < totals[j + 1]) {
