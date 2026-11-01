@@ -364,7 +364,7 @@ void displayDamageLossReport(void) {
     printf("TOTAL DAMAGE LOSS: Rs. %.2f\n", totalLoss);
 }
 
-/* /* Export summary report to file */ */
+/*  Export summary report to file  */
 void displayStockCoverage(void) {
     Location locs[MAX_RECORDS];
     StockEntry stock[MAX_RECORDS];
