@@ -1,0 +1,10 @@
+FACULTY OF TECHNOLOGY - INVENTORY MANAGEMENT SYSTEM
+SUMMARY REPORT
+=====================================================
+Departments / Common Areas registered : 10
+Locations registered                  : 12
+Distinct items in catalogue            : 10
+Total units currently in stock         : 253
+Total value of current stock (Rs.)     : 7617820.00
+Total estimated damage loss (Rs.)      : 171530.00
+=====================================================

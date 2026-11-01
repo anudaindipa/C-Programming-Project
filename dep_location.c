@@ -18,6 +18,30 @@ typedef struct {
     char type[15];
 } Location;
 
+/* Remove the ENTER key left in the input buffer. */
+static void clearInputBuffer(void) {
+    int ch;
+
+    while ((ch = getchar()) != '\n' && ch != EOF) {
+        /* Nothing to do here. */
+    }
+}
+
+/* Remove the newline at the end of a string. */
+static void removeNewline(char text[]) {
+    text[strcspn(text, "\r\n")] = '\0';
+}
+
+/* Change lowercase letters into uppercase letters. */
+static void makeUppercase(char text[]) {
+    int i;
+
+    for (i = 0; text[i] != '\0'; i++) {
+        if (text[i] >= 'a' && text[i] <= 'z') {
+            text[i] = text[i] - 32;
+        }
+    }
+}
 
 
 //Load department records from departments.txt into an array.
@@ -122,15 +146,388 @@ void displayDepartments(void) {
     }
 }
 
+void searchDepartment(void) {
+    Department departments[MAX_RECORDS];
+    char keyword[60];
+    int count, i, found = 0;
+
+    count = loadDepartments(departments);
+
+    printf("Enter code or name to search: ");
+    fgets(keyword, sizeof(keyword), stdin);
+    removeNewline(keyword);
+
+    for (i = 0; i < count; i++) {
+        if (strstr(departments[i].code, keyword) != NULL ||
+            strstr(departments[i].name, keyword) != NULL) {
+            printf("%s | %s | %s\n",
+                   departments[i].code,
+                   departments[i].name,
+                   departments[i].type);
+            found = 1;
+        }
+    }
+
+    if (found == 0) {
+        printf("No matching department found.\n");
+    }
+}
+
+
+/* Update the name and type of an existing department. */
+static void updateDepartment(void) {
+    Department departments[MAX_RECORDS];
+    char code[10];
+    char newName[60];
+    char newType[12];
+    FILE *fp;
+    int count, i, found = -1;
+
+    count = loadDepartments(departments);
+
+    printf("Enter department code to update: ");
+    scanf("%9s", code);
+    clearInputBuffer();
+    makeUppercase(code);
+
+    for (i = 0; i < count; i++) {
+        if (strcmp(departments[i].code, code) == 0) {
+            found = i;
+        }
+    }
+
+    if (found == -1) {
+        printf("Department not found.\n");
+        return;
+    }
+
+    printf("Current name: %s\n", departments[found].name);
+    printf("Enter new name (ENTER to keep): ");
+    fgets(newName, sizeof(newName), stdin);
+    removeNewline(newName);
+
+    if (strcmp(newName, "") != 0) {
+        if (strchr(newName, '|') != NULL) {
+            printf("Name cannot contain the | character. Update cancelled.\n");
+            return;
+        }
+        strcpy(departments[found].name, newName);
+    }
+
+    printf("Current type: %s\n", departments[found].type);
+    printf("Enter new type (ACADEMIC / COMMON): ");
+    fgets(newType, sizeof(newType), stdin);
+    removeNewline(newType);
+    makeUppercase(newType);
+
+    if (strcmp(newType, "") != 0) {
+        if (strcmp(newType, "ACADEMIC") != 0 &&
+            strcmp(newType, "COMMON") != 0) {
+            printf("Invalid type. Update cancelled.\n");
+            return;
+        }
+
+        strcpy(departments[found].type, newType);
+    }
+
+    fp = fopen(DEPT_FILE, "w");
+
+    if (fp == NULL) {
+        printf("Cannot save department data.\n");
+        return;
+    }
+
+    for (i = 0; i < count; i++) {
+        fprintf(fp, "%s|%s|%s\n",
+                departments[i].code,
+                departments[i].name,
+                departments[i].type);
+    }
+
+    fclose(fp);
+    printf("Department updated successfully.\n");
+}
+
+
+/* Read location records from locations.txt into an array. */
+static int loadLocations(Location locations[]) {
+    FILE *fp;
+    int count = 0;
+
+    fp = fopen(LOC_FILE, "r");
+
+    if (fp == NULL) {
+        return 0;
+    }
+
+    while (count < MAX_RECORDS &&
+           fscanf(fp, " %9[^|]|%59[^|]|%9[^|]|%14[^\r\n]",
+                  locations[count].id,
+                  locations[count].name,
+                  locations[count].deptCode,
+                  locations[count].type) == 4) {
+        count++;
+    }
+
+    fclose(fp);
+
+    return count;
+}
+
+
+/* Check whether a department code is already saved. */
+static int isDepartmentExist(char code[]) {
+    Department departments[MAX_RECORDS];
+    int count, i;
+
+    count = loadDepartments(departments);
+
+    for (i = 0; i < count; i++) {
+        if (strcmp(departments[i].code, code) == 0) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+/* Check whether a location ID is already saved. */
+static int isLocationExist(char id[]) {
+    Location locations[MAX_RECORDS];
+    int count, i;
+
+    count = loadLocations(locations);
+
+    for (i = 0; i < count; i++) {
+        if (strcmp(locations[i].id, id) == 0) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+
+/* Add a location and connect it to an existing department. */
+static void addLocation(void) {
+    Location location;
+    FILE *fp;
+
+    printf("\n--- Add Location ---\n");
+
+    printf("Enter location ID: ");
+    scanf("%9s", location.id);
+    clearInputBuffer();
+    makeUppercase(location.id);
+
+    if (isLocationExist(location.id)) {
+        printf("This location ID already exists.\n");
+        return;
+    }
+
+    printf("Enter location name: ");
+    fgets(location.name, sizeof(location.name), stdin);
+    removeNewline(location.name);
+
+    printf("Enter department code: ");
+    scanf("%9s", location.deptCode);
+    clearInputBuffer();
+    makeUppercase(location.deptCode);
+
+    if (!isDepartmentExist(location.deptCode)) {
+        printf("Department does not exist. Add it first.\n");
+        return;
+    }
+
+    printf("Enter type (LAB / OFFICE / COMMON / STORE): ");
+    scanf("%14s", location.type);
+    clearInputBuffer();
+    makeUppercase(location.type);
+
+    if (strcmp(location.name, "") == 0 || strchr(location.name, '|') != NULL) {
+        printf("Location name cannot be empty.\n");
+        return;
+    }
+
+    fp = fopen(LOC_FILE, "a");
+
+    if (fp == NULL) {
+        printf("Cannot open locations.txt\n");
+        return;
+    }
+
+    fprintf(fp, "%s|%s|%s|%s\n",
+            location.id,
+            location.name,
+            location.deptCode,
+            location.type);
+    fclose(fp);
+
+    printf("Location added successfully.\n");
+}
+
+
+/* Display every saved location. */
+static void displayLocations(void) {
+    Location locations[MAX_RECORDS];
+    int count, i;
+
+    count = loadLocations(locations);
+
+    printf("\n--- Location List ---\n");
+
+    if (count == 0) {
+        printf("No locations found.\n");
+        return;
+    }
+
+    printf("%-8s %-25s %-10s %-10s\n",
+           "ID", "NAME", "DEPT", "TYPE");
+
+    for (i = 0; i < count; i++) {
+        printf("%-8s %-25s %-10s %-10s\n",
+               locations[i].id,
+               locations[i].name,
+               locations[i].deptCode,
+               locations[i].type);
+    }
+}
+
+
+/* Count the locations that belong to a department. */
+static int countLocationsInDepartment(char code[]) {
+    Location locations[MAX_RECORDS];
+    int count, i, total = 0;
+
+    count = loadLocations(locations);
+
+    for (i = 0; i < count; i++) {
+        if (strcmp(locations[i].deptCode, code) == 0) {
+            total++;
+        }
+    }
+
+    return total;
+}
+
+/* Delete a department only if it has no locations. */
+static void deleteDepartment(void) {
+    Department departments[MAX_RECORDS];
+    char code[10];
+    FILE *fp;
+    int count, i, found = -1;
+
+    count = loadDepartments(departments);
+
+    printf("Enter department code to delete: ");
+    scanf("%9s", code);
+    clearInputBuffer();
+    makeUppercase(code);
+
+    for (i = 0; i < count; i++) {
+        if (strcmp(departments[i].code, code) == 0) {
+            found = i;
+        }
+    }
+
+    if (found == -1) {
+        printf("Department not found.\n");
+        return;
+    }
+
+    if (countLocationsInDepartment(code) > 0) {
+        printf("This department still has locations.\n");
+        printf("Delete or move those locations first.\n");
+        return;
+    }
+
+    fp = fopen(DEPT_FILE, "w");
+
+    if (fp == NULL) {
+        printf("Cannot save department data.\n");
+        return;
+    }
+
+    for (i = 0; i < count; i++) {
+        if (i != found) {
+            fprintf(fp, "%s|%s|%s\n",
+                    departments[i].code,
+                    departments[i].name,
+                    departments[i].type);
+        }
+    }
+
+    fclose(fp);
+    printf("Department deleted successfully.\n");
+}
+
+/* Display the locations that belong to one department. */
+static void displayLocationsByDepartment(void) {
+    Location locations[MAX_RECORDS];
+    char code[10];
+    int count, i, found = 0;
+    int labCount = 0, officeCount = 0, otherCount = 0;
+
+    count = loadLocations(locations);
+
+    printf("Enter department code: ");
+    scanf("%9s", code);
+    clearInputBuffer();
+    makeUppercase(code);
+
+    if (!isDepartmentExist(code)) {
+        printf("Department does not exist.\n");
+        return;
+    }
+
+    printf("\nLocations under %s:\n", code);
+
+    for (i = 0; i < count; i++) {
+        if (strcmp(locations[i].deptCode, code) == 0) {
+            printf("%s | %s | %s\n",
+                   locations[i].id,
+                   locations[i].name,
+                   locations[i].type);
+
+            if (strcmp(locations[i].type, "LAB") == 0) {
+                labCount++;
+            }
+            else if (strcmp(locations[i].type, "OFFICE") == 0) {
+                officeCount++;
+            }
+            else {
+                otherCount++;
+            }
+
+            found = 1;
+        }
+    }
+
+    if (found == 0) {
+        printf("No locations under this department.\n");
+    }
+    else {
+        printf("Summary: %d lab(s), %d office(s), %d other/common area(s)\n",
+               labCount, officeCount, otherCount);
+    }
+}
+
 
 void departmentMenu(void) {
     int choice;
     do {
-        printf("\n===== Department Management =====\n");
+       printf("\n===== Department and Location Management =====\n");
         printf("1. Add Department / Common Area\n");
         printf("2. Display Departments\n");
+        printf("3. Search Department\n");
+        printf("4. Update Department\n");
+        printf("5. Delete Department\n");
+        printf("6. Add Location\n");
+        printf("7. Display Locations\n");
+        printf("8. Display Locations by Department\n");
         printf("0. Back to Main Menu\n");
         printf("Enter choice: ");
+
 
         if (scanf("%d", &choice) != 1) {
             if (feof(stdin)) {
@@ -145,17 +542,16 @@ void departmentMenu(void) {
         clearInputBuffer();
 
         switch (choice) {
-            case 1:
-                addDepartment();
-                break;
-            case 2:
-                displayDepartments();
-                break;
-            case 0:
-                printf("Returning to main menu.\n");
-                break;
-            default:
-                printf("Invalid choice.\n");
+            case 1: addDepartment(); break;
+            case 2: displayDepartments(); break;
+            case 3: searchDepartment(); break;
+            case 4: updateDepartment(); break;
+            case 5: deleteDepartment(); break;
+            case 6: addLocation(); break;
+            case 7: displayLocations(); break;
+            case 8: displayLocationsByDepartment(); break;
+            case 0: printf("Returning to main menu.\n"); break;
+            default: printf("Invalid choice.\n");
         }
     } while (choice != 0);
 }
