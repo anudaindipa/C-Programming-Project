@@ -2,7 +2,7 @@ ICT|Information and Communication Technology|ACADEMIC
 ET|Engineering Technology|ACADEMIC
 BST|Biosystems Technology|ACADEMIC
 MDC|Multidisciplinary Studies|ACADEMIC
-ITC|IT Centre|ACADEMIC
+ITPL|IT Pool|ACADEMIC
 COMMON|Common Areas|COMMON
 ADM|Administration|COMMON
 LIB|Library|COMMON
