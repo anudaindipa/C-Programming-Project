@@ -1,0 +1,10 @@
+RD0001|IT001|ICTLAB1|1|RETURN|Returned after lab demo - in working order|2026-08-09
+RD0002|IT007|ETLAB1|1|DAMAGE|Display cracked during practical|2026-08-24
+RD0003|IT010|ETLAB1|5|DAMAGE|Lens scratched and unusable|2026-09-14
+RD0004|IT005|MAINSTR|4|RETURN|Excess reams returned to main store|2026-09-20
+RD0005|IT003|ADMOFF|1|DAMAGE|Wheel broken and seat cover torn|2026-09-28
+RD0006|IT006|MAINSTR|1|DAMAGE|Markers dried out - cannot be used|2026-10-01
+RD0007|IT009|LIBHALL|1|RETURN|Not required - returned to store|2026-10-10
+RD0008|IT008|BSTLAB1|1|DAMAGE|Objective lens damaged|2026-10-12
+RD0009|IT001|ITCLAB1|2|RETURN|Course completed - returned to lab|2026-10-20
+RD0010|IT004|ITCLAB1|1|DAMAGE|Table top chipped while shifting|2026-10-29
