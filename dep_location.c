@@ -369,32 +369,21 @@ static void displayLocations(void) {
     }
 }
 
-/* Search departments by code or by part of the name. */
-static void searchDepartment(void) {
-    Department departments[MAX_RECORDS];
-    char keyword[60];
-    int count, i, found = 0;
 
-    count = loadDepartments(departments);
+/* Count the locations that belong to a department. */
+static int countLocationsInDepartment(char code[]) {
+    Location locations[MAX_RECORDS];
+    int count, i, total = 0;
 
-    printf("Enter code or name to search: ");
-    fgets(keyword, sizeof(keyword), stdin);
-    removeNewline(keyword);
+    count = loadLocations(locations);
 
     for (i = 0; i < count; i++) {
-        if (strstr(departments[i].code, keyword) != NULL ||
-            strstr(departments[i].name, keyword) != NULL) {
-            printf("%s | %s | %s\n",
-                   departments[i].code,
-                   departments[i].name,
-                   departments[i].type);
-            found = 1;
+        if (strcmp(locations[i].deptCode, code) == 0) {
+            total++;
         }
     }
 
-    if (found == 0) {
-        printf("No matching department found.\n");
-    }
+    return total;
 }
 
 
