@@ -1,0 +1,12 @@
+ICTLAB1|ICT Computer Laboratory 1|ICT|LAB
+ICTLAB2|ICT Computer Laboratory 2|ICT|LAB
+ETLAB1|Electronics Laboratory|ET|LAB
+ETWORKS|Engineering Workshop|ET|LAB
+BSTLAB1|Biosystems Laboratory|BST|LAB
+ITCLAB1|IT Centre Training Laboratory|ITC|LAB
+MDCOFF|Multidisciplinary Studies Office|MDC|OFFICE
+ADMOFF|Administration Office|ADM|OFFICE
+LIBHALL|Library Reading Hall|LIB|OFFICE
+EXMUNIT|Examination Unit Office|EXAM|OFFICE
+MAINSTR|Main Store|COMMON|STORE
+SPORTST|Sports Equipment Room|SPORT|STORE
