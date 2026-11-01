@@ -437,6 +437,58 @@ static void deleteDepartment(void) {
     printf("Department deleted successfully.\n");
 }
 
+/* Display the locations that belong to one department. */
+static void displayLocationsByDepartment(void) {
+    Location locations[MAX_RECORDS];
+    char code[10];
+    int count, i, found = 0;
+    int labCount = 0, officeCount = 0, otherCount = 0;
+
+    count = loadLocations(locations);
+
+    printf("Enter department code: ");
+    scanf("%9s", code);
+    clearInputBuffer();
+    makeUppercase(code);
+
+    if (!isDepartmentExist(code)) {
+        printf("Department does not exist.\n");
+        return;
+    }
+
+    printf("\nLocations under %s:\n", code);
+
+    for (i = 0; i < count; i++) {
+        if (strcmp(locations[i].deptCode, code) == 0) {
+            printf("%s | %s | %s\n",
+                   locations[i].id,
+                   locations[i].name,
+                   locations[i].type);
+
+            if (strcmp(locations[i].type, "LAB") == 0) {
+                labCount++;
+            }
+            else if (strcmp(locations[i].type, "OFFICE") == 0) {
+                officeCount++;
+            }
+            else {
+                otherCount++;
+            }
+
+            found = 1;
+        }
+    }
+
+    if (found == 0) {
+        printf("No locations under this department.\n");
+    }
+    else {
+        printf("Summary: %d lab(s), %d office(s), %d other/common area(s)\n",
+               labCount, officeCount, otherCount);
+    }
+}
+
+
 void departmentMenu(void) {
     int choice;
     do {
